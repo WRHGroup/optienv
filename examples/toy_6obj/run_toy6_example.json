@@ -1,0 +1,12 @@
+{
+  "model": {
+    "model_dir": "./toy_model",
+    "wrapper_file": "wrapper_toy6.py",
+    "variables_csv": "../variable_declaration.csv",
+    "objectives_csv": "../objective_declaration.csv"
+  },
+  "algorithm": {
+    "population_size": 120,
+    "generations": 50
+  }
+}

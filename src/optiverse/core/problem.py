@@ -1,0 +1,13 @@
+
+from __future__ import annotations
+from typing import Protocol, Sequence, Mapping, Any
+import numpy as np
+
+class MultiObjectiveProblem(Protocol):
+    @property
+    def n_variables(self) -> int: ...
+    @property
+    def n_objectives(self) -> int: ...
+    @property
+    def bounds(self) -> Sequence[tuple[float, float]]: ...
+    def evaluate(self, x: np.ndarray, context: Mapping[str, Any] | None = None) -> np.ndarray: ...

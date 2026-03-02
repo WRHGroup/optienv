@@ -1,0 +1,7 @@
+Name,Objective
+f1_min_sq_0.00,minimize
+f2_min_sq_1.00,minimize
+f3_min_sq_0.25,minimize
+f4_min_sq_0.50,minimize
+f5_min_sq_0.75,minimize
+f6_sum_max,maximize
