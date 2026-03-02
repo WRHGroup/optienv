@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "gauges_grdc",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "grdc_no": 200, "wmo_reg": 1, "sub_reg": 1621, "river": "BLUE NILE", "station": "Gilgel Abay", "country": "ET", "area": -999, "altitude": 51, "d_start": null, "d_end": null, "d_yrs": null, "d_miss": null, "m_start": 1973, "m_end": 1984, "m_yrs": 12, "m_miss": 0, "t_start": 1973, "t_end": 1984, "t_yrs": 12, "lta_discharge": 1176.116, "r_volume_yr": 37.08999418, "r_height_yr": "n.a." }, "geometry": { "type": "Point", "coordinates": [ 37.036, 11.51 ] } }
+]
+}

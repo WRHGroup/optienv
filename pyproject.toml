@@ -1,0 +1,62 @@
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "optiverse"
+version = "0.1.1"
+description = "A plugin-driven bridge between simulation models and multi-objective evolutionary algorithms."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "Mohammed Basheer", email = "mohammedadamabbaker@gmail.com" }]
+dependencies = [
+  "numpy>=1.24",
+  "typer>=0.12",
+  "pydantic>=2",
+  "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+platypus = ["platypus-opt>=1.0.4"]
+docs = ["mkdocs-material"]
+dev = [
+  "pytest>=8",
+  "coverage[toml]",
+  "ruff>=0.6",
+  "black>=24.8",
+  "mypy>=1.10",
+  "pre-commit>=3.7",
+  "hypothesis>=6",
+]
+
+[project.scripts]
+optiverse = "optiverse.cli.app:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E","F","I","UP","B","SIM"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

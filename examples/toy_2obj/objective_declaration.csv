@@ -1,0 +1,4 @@
+Name,Objective
+f1_sum_squares,minimize
+f2_sum_one_minus_squares,minimize
+f3_sum,maximize
