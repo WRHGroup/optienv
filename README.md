@@ -82,7 +82,7 @@ pip install optiverse
 ### For Development
 
 ```bash
-git clone https://github.com/your-org/optiverse.git
+git clone https://github.com/WRHGroup/optiverse.git
 cd optiverse
 pip install -e .
 ```

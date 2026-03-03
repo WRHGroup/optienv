@@ -51,12 +51,20 @@ def run_wflow(model_folder):
     subprocess.run([path], shell=True)
 
 def calculate_metrics(model_folder):
+    # Pass optional env overrides for warm-up years / epsilon (keeps your prior workflow)
+    wy = os.environ.get("WRAPPER_WARMUP_YEARS")  # optional
+    epsf = os.environ.get("WRAPPER_EPS_FACTOR")  # optional
+
     sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
     import compute_metrics
     sys.argv = [sys.argv[0],
                 "--sim", (model_folder + "/run_default/output.csv"),
                 "--obs", (model_folder + "/observed_streamflow.csv"),
                 "--out_dir", model_folder]
+    if wy:
+        sys.argv += ["--warmup_years", str(int(wy))]
+    if epsf:
+        sys.argv += ["--eps_factor", str(float(epsf))]
 
     compute_metrics.main()
 
