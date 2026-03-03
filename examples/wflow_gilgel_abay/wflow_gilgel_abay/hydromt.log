@@ -1,0 +1,223 @@
+2026-02-15 17:37:27,705 - build - log - DEBUG - Writing log messages to new file /project/6087451/alaminie/Nile/Data_Catalog_BNB/Wflow_chrps1000_petx3/hydromt.log.
+2026-02-15 17:37:27,706 - build - log - INFO - HydroMT version: 0.10.1
+2026-02-15 17:37:27,706 - build - main - INFO - Building instance of wflow model at /project/6087451/alaminie/Nile/Data_Catalog_BNB/Wflow_chrps1000_petx3.
+2026-02-15 17:37:27,706 - build - main - INFO - User settings:
+2026-02-15 17:37:28,644 - build - data_catalog - INFO - Parsing data catalog from /project/6087451/alaminie/Nile/Data_Catalog_BNB/data_catalog.yml
+2026-02-15 17:37:28,678 - build - model_api - INFO - Initializing wflow model from hydromt_wflow (v0.8.0).
+2026-02-15 17:37:28,678 - build - data_catalog - INFO - Parsing data catalog from /project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/parameters_data.yml
+2026-02-15 17:37:28,705 - build - model_api - DEBUG - Setting model config options.
+2026-02-15 17:37:28,727 - build - model_api - DEBUG - Default config read from /project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/wflow/wflow_sbm.toml
+2026-02-15 17:37:28,727 - build - model_api - INFO - setup_basemaps.region: {'bbox': [36.74, 10.9499, 37.396, 11.522]}
+2026-02-15 17:37:28,727 - build - model_api - INFO - setup_basemaps.hydrography_fn: merit_hydro
+2026-02-15 17:37:28,727 - build - model_api - INFO - setup_basemaps.basin_index_fn: merit_hydro_index
+2026-02-15 17:37:28,727 - build - model_api - INFO - setup_basemaps.res: 0.00833
+2026-02-15 17:37:28,727 - build - model_api - INFO - setup_basemaps.upscale_method: ihu
+2026-02-15 17:37:28,727 - build - wflow - INFO - Preparing base hydrography basemaps.
+2026-02-15 17:37:28,767 - build - rasterdataset - INFO - Reading merit_hydro raster data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/Merit_G/*.tif
+2026-02-15 17:37:29,496 - build - basin_mask - DEBUG - Parsed region (kind=bbox): {'bbox': [36.74, 10.9499, 37.396, 11.522]}
+2026-02-15 17:37:29,949 - build - wflow - DEBUG - Adding basins vector to geoms.
+2026-02-15 17:37:29,949 - build - basemaps - DEBUG - (Sub)basin at original resolution has 93808 cells.
+2026-02-15 17:37:32,207 - build - basemaps - INFO - Upscale flow direction data: 4x, ihu method.
+2026-02-15 17:37:40,542 - build - basemaps - DEBUG - Derive stream order.
+2026-02-15 17:37:40,657 - build - basemaps - DEBUG - Map shape: (72, 83); active cells: 5976.
+2026-02-15 17:37:40,657 - build - basemaps - DEBUG - Outlet coordinates (5/98): (36.94000,11.51800), (36.99600,11.51800), (37.01200,11.51800), (37.03600,11.51800), (37.05200,11.51800).
+2026-02-15 17:37:41,107 - build - wflow - DEBUG - Adding region vector to geoms.
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.hydrography_fn: merit_hydro
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.river_geom_fn: hydro_rivers_af
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.river_upa: 10
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.rivdph_method: powlaw
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.slope_len: 2000
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.min_rivlen_ratio: 0.0
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.min_rivdph: 1
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.min_rivwth: 30
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.smooth_len: 5000
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.rivman_mapping_fn: roughness_river_mapping_default
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.elevtn_map: wflow_dem
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.river_routing: kinematic-wave
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.connectivity: 8
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.rivwth_method: powlaw
+2026-02-15 17:37:41,109 - build - model_api - INFO - setup_rivers.qbankfull_method: manning
+2026-02-15 17:37:41,109 - build - wflow - INFO - Preparing river maps.
+2026-02-15 17:37:41,137 - build - rasterdataset - INFO - Reading merit_hydro raster data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/Merit_G/*.tif
+2026-02-15 17:37:41,193 - build - rasterdataset - DEBUG - Clip to [36.736, 10.946, 37.400, 11.522] (epsg:4326))
+2026-02-15 17:37:41,196 - build - river - DEBUG - Set river mask (min uparea: 10 km2) and prepare flow dirs.
+2026-02-15 17:37:41,298 - build - river - DEBUG - Derive river length.
+2026-02-15 17:37:41,808 - build - river - DEBUG - Derive river slope.
+2026-02-15 17:37:42,222 - build - dataframe - INFO - Reading roughness_river_mapping_default csv data from /project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/wflow/N_river_mapping.csv
+2026-02-15 17:37:42,447 - build - landuse - INFO - Deriving N_River using average resampling (nodata=-999.0).
+2026-02-15 17:37:42,450 - build - geodataframe - INFO - Reading hydro_rivers_af vector data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/HydroRIVERS_v10_af_clean.gpkg
+2026-02-15 17:37:44,088 - build - geodataframe - DEBUG - Clip intersects [36.736, 10.946, 37.400, 11.522] (EPSG:4326)
+2026-02-15 17:37:44,182 - build - river - DEBUG - Derive ['rivwth', 'rivdph', 'qbankfull'] from shapefile.
+2026-02-15 17:37:44,212 - build - river - DEBUG - Valid for 1171/1215 river cells (max dist: 440 m).
+2026-02-15 17:37:45,707 - build - wflow - DEBUG - Adding rivers vector to geoms.
+2026-02-15 17:37:46,261 - build - model_api - INFO - setup_lakes.lakes_fn: hydro_lakes
+2026-02-15 17:37:46,262 - build - model_api - INFO - setup_lakes.rating_curve_fns: None
+2026-02-15 17:37:46,262 - build - model_api - INFO - setup_lakes.min_area: 10.0
+2026-02-15 17:37:46,262 - build - model_api - INFO - setup_lakes.add_maxstorage: False
+2026-02-15 17:37:46,262 - build - wflow - INFO - Preparing lake maps.
+2026-02-15 17:37:46,263 - build - geodataframe - INFO - Reading hydro_lakes vector data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/hydro_lakes_mjr5.gpkg
+2026-02-15 17:37:46,400 - build - nodata - WARNING - No data was read from source: hydro_lakes
+2026-02-15 17:37:46,400 - build - wflow - INFO - Skipping method, as no data has been found
+2026-02-15 17:37:46,400 - build - model_api - INFO - setup_lulcmaps.lulc_fn: globcover
+2026-02-15 17:37:46,400 - build - model_api - INFO - setup_lulcmaps.lulc_mapping_fn: None
+2026-02-15 17:37:46,400 - build - model_api - INFO - setup_lulcmaps.lulc_vars: ['landuse', 'Kext', 'N', 'PathFrac', 'RootingDepth', 'Sl', 'Swood', 'WaterFrac', 'kc', 'alpha_h1', 'h1', 'h2', 'h3_high', 'h3_low', 'h4']
+2026-02-15 17:37:46,400 - build - wflow - INFO - Preparing LULC parameter maps.
+2026-02-15 17:37:46,401 - build - rasterdataset - INFO - Reading globcover raster data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/landuse_bnb.tif
+2026-02-15 17:37:46,484 - build - rasterdataset - DEBUG - Clip to [36.736, 10.946, 37.400, 11.522] (epsg:4326))
+2026-02-15 17:37:46,485 - build - dataframe - INFO - Reading globcover_mapping_default csv data from /project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/lulc/globcover_mapping.csv
+2026-02-15 17:37:46,535 - build - landuse - INFO - Deriving landuse using nearest resampling (nodata=230).
+2026-02-15 17:37:46,545 - build - landuse - INFO - Deriving Kext using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,552 - build - landuse - INFO - Deriving N using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,559 - build - landuse - INFO - Deriving PathFrac using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,567 - build - landuse - INFO - Deriving RootingDepth using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,574 - build - landuse - INFO - Deriving Sl using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,581 - build - landuse - INFO - Deriving Swood using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,589 - build - landuse - INFO - Deriving WaterFrac using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,596 - build - landuse - INFO - Deriving kc using average resampling (nodata=-999.0).
+2026-02-15 17:37:46,603 - build - landuse - INFO - Deriving alpha_h1 using mode resampling (nodata=-999).
+2026-02-15 17:37:46,620 - build - landuse - INFO - Deriving h1 using average resampling (nodata=-999).
+2026-02-15 17:37:46,627 - build - landuse - INFO - Deriving h2 using average resampling (nodata=-999).
+2026-02-15 17:37:46,636 - build - landuse - INFO - Deriving h3_high using average resampling (nodata=-999).
+2026-02-15 17:37:46,643 - build - landuse - INFO - Deriving h3_low using average resampling (nodata=-999).
+2026-02-15 17:37:46,651 - build - landuse - INFO - Deriving h4 using average resampling (nodata=-999).
+2026-02-15 17:37:46,666 - build - model_api - INFO - setup_soilmaps.soil_fn: soilgrids_2020
+2026-02-15 17:37:46,666 - build - model_api - INFO - setup_soilmaps.ptf_ksatver: brakensiek
+2026-02-15 17:37:46,666 - build - model_api - INFO - setup_soilmaps.soil_mapping_fn: None
+2026-02-15 17:37:46,666 - build - model_api - INFO - setup_soilmaps.wflow_thicknesslayers: [100, 300, 800]
+2026-02-15 17:37:46,666 - build - wflow - INFO - Preparing soil parameter maps.
+2026-02-15 17:37:46,671 - build - rasterdataset - INFO - Reading soilgrids_2020 raster data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/*.tif
+2026-02-15 17:37:46,815 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/bd_sl1.tif
+2026-02-15 17:37:46,863 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/bd_sl2.tif
+2026-02-15 17:37:46,976 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/bd_sl3.tif
+2026-02-15 17:37:47,020 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/bd_sl4.tif
+2026-02-15 17:37:47,097 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/bd_sl5.tif
+2026-02-15 17:37:47,146 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/bd_sl6.tif
+2026-02-15 17:37:47,192 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/clyppt_sl1.tif
+2026-02-15 17:37:47,250 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/clyppt_sl2.tif
+2026-02-15 17:37:47,315 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/clyppt_sl3.tif
+2026-02-15 17:37:47,384 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/clyppt_sl4.tif
+2026-02-15 17:37:47,423 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/clyppt_sl5.tif
+2026-02-15 17:37:47,457 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/clyppt_sl6.tif
+2026-02-15 17:37:47,498 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/oc_sl1.tif
+2026-02-15 17:37:47,559 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/oc_sl2.tif
+2026-02-15 17:37:47,601 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/oc_sl3.tif
+2026-02-15 17:37:47,659 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/oc_sl4.tif
+2026-02-15 17:37:47,710 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/oc_sl5.tif
+2026-02-15 17:37:47,749 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/oc_sl6.tif
+2026-02-15 17:37:47,824 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/ph_sl1.tif
+2026-02-15 17:37:47,874 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/ph_sl2.tif
+2026-02-15 17:37:47,914 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/ph_sl3.tif
+2026-02-15 17:37:47,973 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/ph_sl4.tif
+2026-02-15 17:37:48,063 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/ph_sl5.tif
+2026-02-15 17:37:48,126 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/ph_sl6.tif
+2026-02-15 17:37:48,267 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sltppt_sl1.tif
+2026-02-15 17:37:48,300 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sltppt_sl2.tif
+2026-02-15 17:37:48,414 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sltppt_sl3.tif
+2026-02-15 17:37:48,502 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sltppt_sl4.tif
+2026-02-15 17:37:48,550 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sltppt_sl5.tif
+2026-02-15 17:37:48,593 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sltppt_sl6.tif
+2026-02-15 17:37:48,676 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sndppt_sl1.tif
+2026-02-15 17:37:48,695 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sndppt_sl2.tif
+2026-02-15 17:37:48,764 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sndppt_sl3.tif
+2026-02-15 17:37:48,851 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sndppt_sl4.tif
+2026-02-15 17:37:48,909 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sndppt_sl5.tif
+2026-02-15 17:37:48,964 - build - io - WARNING - nodata value missing for /project/6087451/alaminie/Nile/Data_Catalog_BNB/SoilGrids_N/sndppt_sl6.tif
+2026-02-15 17:37:49,063 - build - rasterdataset - DEBUG - Clip to [36.736, 10.946, 37.400, 11.522] (epsg:4326))
+2026-02-15 17:37:49,068 - build - rasterdataset - DEBUG - Convert units for 36 variables.
+2026-02-15 17:37:49,208 - build - soilgrids - INFO - calculate and resample thetaS
+2026-02-15 17:37:59,144 - build - soilgrids - INFO - calculate and resample thetaR
+2026-02-15 17:38:02,874 - build - soilgrids - INFO - calculate and resample KsatVer
+2026-02-15 17:38:03,217 - build - soilgrids - INFO - calculate and resample pore size distribution index
+2026-02-15 17:38:05,671 - build - soilgrids - INFO - fit z - log(KsatVer) with numpy linalg regression (y = b*x) -> M_
+2026-02-15 17:38:07,263 - build - soilgrids - INFO - fit zi - Ksat with curve_fit (scipy.optimize) -> M
+2026-02-15 17:38:10,375 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for thetaS
+2026-02-15 17:38:11,667 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for thetaR
+2026-02-15 17:38:13,470 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for SoilThickness
+2026-02-15 17:38:13,554 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for SoilMinThickness
+2026-02-15 17:38:13,586 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for c
+2026-02-15 17:38:13,589 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer
+2026-02-15 17:38:13,735 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_2.5cm
+2026-02-15 17:38:14,018 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_10.0cm
+2026-02-15 17:38:14,338 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_22.5cm
+2026-02-15 17:38:14,687 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_45.0cm
+2026-02-15 17:38:15,041 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_80.0cm
+2026-02-15 17:38:15,428 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_150.0cm
+2026-02-15 17:38:15,761 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M_original_
+2026-02-15 17:38:17,705 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M_
+2026-02-15 17:38:19,949 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for f_
+2026-02-15 17:38:22,179 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M_original
+2026-02-15 17:38:24,678 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M
+2026-02-15 17:38:27,084 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for f
+2026-02-15 17:38:29,513 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for wflow_soil
+2026-02-15 17:38:30,307 - build - model_api - INFO - setup_laimaps.lai_fn: modis_lai
+2026-02-15 17:38:30,307 - build - model_api - INFO - setup_laimaps.lulc_fn: None
+2026-02-15 17:38:30,307 - build - model_api - INFO - setup_laimaps.lulc_sampling_method: any
+2026-02-15 17:38:30,307 - build - model_api - INFO - setup_laimaps.lulc_zero_classes: []
+2026-02-15 17:38:30,307 - build - model_api - INFO - setup_laimaps.buffer: 2
+2026-02-15 17:38:30,307 - build - wflow - INFO - Preparing LAI maps.
+2026-02-15 17:38:30,308 - build - rasterdataset - INFO - Reading modis_lai netcdf data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/modis_lai_monthly_climatology.nc
+2026-02-15 17:38:34,428 - build - rasterdataset - DEBUG - Clip to [36.736, 10.946, 37.400, 11.522] (epsg:4326))
+2026-02-15 17:38:34,429 - build - landuse - INFO - Deriving LAI using average resampling (nodata=nan).
+2026-02-15 17:38:35,683 - build - model_api - INFO - setup_outlets.river_only: True
+2026-02-15 17:38:35,683 - build - model_api - INFO - setup_outlets.toml_output: csv
+2026-02-15 17:38:35,683 - build - model_api - INFO - setup_outlets.gauge_toml_header: ['Q']
+2026-02-15 17:38:35,683 - build - model_api - INFO - setup_outlets.gauge_toml_param: ['lateral.river.q_av']
+2026-02-15 17:38:35,683 - build - wflow - INFO - Gauges locations set based on river outlets.
+2026-02-15 17:38:35,686 - build - wflow - INFO - Gauges map based on catchment river outlets added.
+2026-02-15 17:38:35,686 - build - wflow - INFO - Adding ['lateral.river.q_av'] to csv section of toml.
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.gauges_fn: grdc
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.index_col: None
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.snap_to_river: True
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.mask: None
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.snap_uparea: False
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.max_dist: 10000.0
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.wdw: 3
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.rel_error: 0.05
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.abs_error: 50.0
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.fillna: False
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.derive_subcatch: False
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.basename: None
+2026-02-15 17:38:35,686 - build - model_api - INFO - setup_gauges.toml_output: csv
+2026-02-15 17:38:35,687 - build - model_api - INFO - setup_gauges.gauge_toml_header: ['Q', 'P']
+2026-02-15 17:38:35,687 - build - model_api - INFO - setup_gauges.gauge_toml_param: ['lateral.river.q_av', 'vertical.precipitation']
+2026-02-15 17:38:35,687 - build - geodataframe - INFO - Reading grdc csv data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/grdc_Gabay.csv
+2026-02-15 17:38:35,710 - build - geodataframe - DEBUG - Clip intersects [36.736, 10.946, 37.400, 11.522] (EPSG:4326)
+2026-02-15 17:38:35,714 - build - wflow - INFO - 1 grdc gauge locations found within domain
+2026-02-15 17:38:36,058 - build - wflow - INFO - Adding ['lateral.river.q_av', 'vertical.precipitation'] to csv section of toml.
+2026-02-15 17:38:36,058 - build - model_api - INFO - setup_precip_forcing.precip_fn: chirps
+2026-02-15 17:38:36,058 - build - model_api - INFO - setup_precip_forcing.precip_clim_fn: None
+2026-02-15 17:38:36,058 - build - model_api - INFO - setup_precip_forcing.chunksize: None
+2026-02-15 17:38:36,069 - build - rasterdataset - INFO - Reading chirps netcdf data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/CHIRPS_daily_1991_2000_Nile.nc
+2026-02-15 17:38:36,137 - build - rasterdataset - DEBUG - Shifting time labels with 86400 sec.
+2026-02-15 17:38:36,138 - build - rasterdataset - DEBUG - Slicing time dim (datetime.datetime(1991, 1, 1, 0, 0), datetime.datetime(2000, 12, 31, 0, 0))
+2026-02-15 17:38:36,182 - build - rasterdataset - DEBUG - Clip to [36.736, 10.946, 37.400, 11.522] (epsg:4326))
+2026-02-15 17:38:37,294 - build - model_api - INFO - setup_pet_forcing.pet_fn: era5
+2026-02-15 17:38:37,294 - build - model_api - INFO - setup_pet_forcing.chunksize: None
+2026-02-15 17:38:37,294 - build - wflow - INFO - Preparing potential evapotranspiration forcing maps.
+2026-02-15 17:38:37,296 - build - rasterdataset - INFO - Reading era5 netcdf data from /project/6087451/alaminie/Nile/Data_Catalog_BNB/era5_pet_mmday_fixed_x3.nc
+2026-02-15 17:38:37,389 - build - rasterdataset - DEBUG - Slicing time dim (datetime.datetime(1991, 1, 1, 0, 0), datetime.datetime(2000, 12, 31, 0, 0))
+2026-02-15 17:38:37,391 - build - rasterdataset - DEBUG - Clip to [36.736, 10.946, 37.400, 11.522] (epsg:4326))
+2026-02-15 17:38:38,286 - build - model_api - INFO - setup_constant_pars.dtype: float32
+2026-02-15 17:38:38,286 - build - model_api - INFO - setup_constant_pars.nodata: -999
+2026-02-15 17:38:38,286 - build - model_api - INFO - setup_constant_pars.KsatHorFrac: 10000
+2026-02-15 17:38:38,286 - build - model_api - INFO - setup_constant_pars.Cfmax: 3.75653
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.cf_soil: 0.038
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.EoverR: 0.11
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.InfiltCapPath: 5
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.InfiltCapSoil: 600
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.MaxLeakage: 0
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.rootdistpar: -500
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.TT: 0
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.TTI: 2
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.TTM: 0
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.WHC: 0.1
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.G_Cfmax: 5.3
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.G_SIfrac: 0.002
+2026-02-15 17:38:38,287 - build - model_api - INFO - setup_constant_pars.G_TT: 1.3
+2026-02-15 17:38:38,304 - build - wflow - INFO - Write model data to /project/6087451/alaminie/Nile/Data_Catalog_BNB/Wflow_chrps1000_petx3
+2026-02-15 17:38:38,334 - build - wflow - INFO - Write grid to /project/6087451/alaminie/Nile/Data_Catalog_BNB/Wflow_chrps1000_petx3/staticmaps.nc
+2026-02-15 17:38:38,537 - build - wflow - INFO - Writing model staticgeom to file.
+2026-02-15 17:38:38,662 - build - wflow - INFO - Write forcing file
+2026-02-15 17:38:38,859 - build - wflow - WARNING - Not all dates found in precip_fn changing starttime to 1991-01-02 00:00:00 and endtime to 2000-12-31 00:00:00 in the toml.
+2026-02-15 17:38:38,861 - build - wflow - INFO - Process forcing; saving to /project/6087451/alaminie/Nile/Data_Catalog_BNB/Wflow_chrps1000_petx3/inmaps.nc
+2026-02-15 17:38:51,709 - build - wflow - INFO - Writing model config to /project/6087451/alaminie/Nile/Data_Catalog_BNB/Wflow_chrps1000_petx3/wflow_sbm.toml

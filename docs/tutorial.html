@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="License" href="license.html" />
-    <link rel="prev" title="Command Line Interface" href="command_line.html" /> 
+    <link rel="next" title="Tutorial: Six‑Objective Toy Optimization" href="tutorial_toy6.html" />
+    <link rel="prev" title="Modules and Architecture (Key Parts)" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,12 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">OptiVerse: Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules and Architecture (Key Parts)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html">Tutorial: Six‑Objective Toy Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html">Tutorial: Calibrating a Wflow Hydrological Model</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#suggested-citation">Suggested citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#acknowledgements">Acknowledgements</a></li>
 </ul>
 
         </div>
@@ -78,14 +85,43 @@
              
   <section id="tutorials">
 <h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_toy6.html">Tutorial: Six‑Objective Toy Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#goal">Goal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#directory-layout">Directory layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#step-1-wrapper">Step 1 — Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#step-2-variables-and-objectives-csv">Step 2 — Variables and Objectives CSV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#step-3-json-configuration">Step 3 — JSON configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#step-4-run-nsgaii-baseline">Step 4 — Run NSGA‑II (baseline)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#step-5-run-nsgaiii-manyobjective">Step 5 — Run NSGA‑III (many‑objective)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#step-6-analyze-global-front-normalized-hv">Step 6 — Analyze: global front &amp; normalized HV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#what-to-expect">What to expect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html#tips-troubleshooting">Tips &amp; Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_wflow.html">Tutorial: Calibrating a Wflow Hydrological Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#goal">Goal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#folder-structure-example">Folder structure (example)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#wrapper-contract-recap">Wrapper contract (recap)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#variables-and-objectives">Variables and objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#json-configuration">JSON configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#running-the-calibration">Running the calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#outputs-analysis">Outputs &amp; analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html#appendix-b-expected-metrics-format">Appendix B (expected metrics format)</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="command_line.html" class="btn btn-neutral float-left" title="Command Line Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="Modules and Architecture (Key Parts)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_toy6.html" class="btn btn-neutral float-right" title="Tutorial: Six‑Objective Toy Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -56,7 +56,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -212,3 +211,4 @@ results/
 wflow_gilgel_abay_*
 toy_6obj_*
 toy_2obj_*
+wflow_tana_*

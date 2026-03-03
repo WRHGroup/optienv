@@ -1,0 +1,370 @@
+.. _tutorial-wflow:
+
+================================================
+Tutorial: Calibrating a Wflow Hydrological Model
+================================================
+
+Goal
+====
+
+This tutorial shows how to calibrate a Wflow‑based hydrological model using
+OptiVerse. We treat calibration as a **three‑objective** optimization problem:
+
+- **KGEp** — maximize
+- **logNSE** — maximize
+- **bias_score** — maximize
+
+We will:
+
+1. Prepare the **wrapper** that runs Wflow and computes metrics.
+2. Provide **variables** and **objectives** via CSV.
+3. Run **search** (NSGA‑II and NSGA‑III options).
+4. Extract the **global front** and compute **normalized HV**.
+
+Folder structure (example)
+==========================
+
+.. code-block:: text
+
+   your_project/
+   ├─ wflow_gilgel_abay/                # model directory (inputs, scripts, batch)
+   │  ├─ wrapper_wflow.py               # your wrapper
+   │  ├─ Wflow-julia.bat                # starts the Wflow/Julia simulation
+   │  ├─ compute_metrics.py             # computes KGEp/logNSE/bias_score → metrics.txt
+   │  ├─ robust_update_staticmaps.py    # any preprocessing needed by the model
+   │  ├─ observed_streamflow.csv
+   │  └─ ... (Wflow assets)
+   ├─ variable_declaration.csv
+   ├─ objective_declaration.csv
+   └─ run_search.json
+
+Wrapper contract (recap)
+========================
+
+OptiVerse writes ``variable_values.csv`` inside a **working copy** of your
+model directory. Your wrapper must:
+
+1. Read ``variable_values.csv`` and apply parameters to the model inputs.
+2. Run the simulation (e.g., by calling the provided batch or Julia script).
+3. Compute metrics and write ``metrics.txt`` (or directly write objectives).
+4. Produce ``objective_values.csv`` with two columns: ``Name,Value``.
+
+Example wrapper outline
+-----------------------
+
+**File:** ``wflow_gilgel_abay/wrapper_wflow.py`` (outline only)
+
+.. code-block:: python
+
+   from __future__ import annotations
+   import os, csv, subprocess, sys
+
+   def create_tbl_files(model_folder: str) -> None:
+       # Map variable_values.csv → per-parameter .tbl files for Wflow inputs
+       # Make sure outputs go INSIDE model_folder (no global temp paths).
+       ...
+
+   def update_static_maps(model_folder: str) -> None:
+       # Call robust_update_staticmaps with --staticmap, --param_dir, --backup
+       ...
+
+   def run_wflow(model_folder: str) -> None:
+       # IMPORTANT: run in the working directory; avoid shell=True
+       env = os.environ.copy()
+       # If using Julia, avoid global depot contention (optional but recommended):
+       env.setdefault("JULIA_PROJECT", model_folder)
+       env.setdefault("JULIA_DEPOT_PATH", os.path.join(model_folder, ".julia_depot"))
+
+       exe = os.path.join(model_folder, "Wflow-julia.bat")
+       subprocess.run([exe], cwd=model_folder, env=env, check=True)
+
+   def calculate_metrics(model_folder: str) -> None:
+       # e.g., compute_metrics.py writes metrics.txt with three comma-separated values
+       sys.path.insert(0, os.path.dirname(__file__))
+       import compute_metrics
+       sys.argv = [sys.argv[0],
+                   "--sim", os.path.join(model_folder, "run_default/output.csv"),
+                   "--obs", os.path.join(model_folder, "observed_streamflow.csv"),
+                   "--out_dir", model_folder]
+       compute_metrics.main()
+
+   def prepare_objectives(model_folder: str) -> None:
+       inp = os.path.join(model_folder, "metrics.txt")
+       outp = os.path.join(model_folder, "objective_values.csv")
+       names = ["KGEp", "logNSE", "bias_score"]
+       with open(inp, "r") as f:
+           values = f.readline().strip().split(",")
+       if len(values) != 3:
+           raise RuntimeError("Expected 3 metrics in metrics.txt")
+       with open(outp, "w", newline="") as f:
+           w = csv.writer(f); w.writerow(["Name", "Value"])
+           w.writerows(zip(names, values))
+
+   def search_and_apply_variables(model_folder: str) -> None:
+       create_tbl_files(model_folder)
+       update_static_maps(model_folder)
+       run_wflow(model_folder)
+       calculate_metrics(model_folder)
+       prepare_objectives(model_folder)
+
+Variables and objectives
+========================
+
+**Objectives** (three *maximize*) → ``objective_declaration.csv``
+
+.. code-block:: csv
+
+   Name,Objective
+   KGEp,maximize
+   logNSE,maximize
+   bias_score,maximize
+
+**Variables** → ``variable_declaration.csv``
+
+Paste the full list provided for your catchment. The header must be
+``Name,Upper_bound,Lower_bound``. Below is a compact example showing the pattern;
+see the appendix for the full list (as supplied).
+
+.. code-block:: csv
+
+   Name,Upper_bound,Lower_bound
+   thetaS.1,0.01,0.7
+   thetaS.2,0.01,0.7
+   ...
+   N_River.1,0.04,0.5
+   N_River.2,0.04,0.5
+   ...
+   SoilThickness.1,2000,8950
+   ...
+   KsatVer.1,500,10000
+   ...
+   RootingDepth.1,100,5000
+   ...
+   KsatHorFrac.1,800,1000
+   ...
+   InfiltCapSoil.1,100,400
+   ...
+
+Appendix A (full variable list)
+-------------------------------
+
+.. code-block:: csv
+
+   Name,Upper_bound,Lower_bound
+   thetaS.1,0.01,0.7
+   thetaS.2,0.01,0.7
+   thetaS.3,0.01,0.7
+   thetaS.4,0.01,0.7
+   thetaS.5,0.01,0.7
+   thetaS.6,0.01,0.7
+   thetaS.7,0.01,0.7
+   thetaS.8,0.01,0.7
+   thetaS.9,0.01,0.7
+   thetaS.10,0.01,0.7
+   thetaS.11,0.01,0.7
+   thetaS.12,0.01,0.7
+   thetaS.13,0.01,0.7
+   N_River.1,0.04,0.5
+   N_River.2,0.04,0.5
+   N_River.3,0.04,0.5
+   N_River.4,0.04,0.5
+   N_River.5,0.04,0.5
+   N_River.6,0.04,0.5
+   N_River.7,0.04,0.5
+   N_River.8,0.04,0.5
+   N_River.9,0.04,0.5
+   N_River.10,0.04,0.5
+   N_River.11,0.04,0.5
+   N_River.12,0.04,0.5
+   N_River.13,0.04,0.5
+   SoilThickness.1,2000,8950
+   SoilThickness.2,2000,8950
+   SoilThickness.3,2000,8950
+   SoilThickness.4,2000,8950
+   SoilThickness.5,2000,8950
+   SoilThickness.6,2000,8950
+   SoilThickness.7,2000,8950
+   SoilThickness.8,2000,8950
+   SoilThickness.9,2000,8950
+   SoilThickness.10,2000,8950
+   SoilThickness.11,2000,8950
+   SoilThickness.12,2000,8950
+   SoilThickness.13,2000,8950
+   KsatVer.1,500,10000
+   KsatVer.2,500,10000
+   KsatVer.3,500,10000
+   KsatVer.4,500,10000
+   KsatVer.5,500,10000
+   KsatVer.6,500,10000
+   KsatVer.7,500,10000
+   KsatVer.8,500,10000
+   KsatVer.9,500,10000
+   KsatVer.10,500,10000
+   KsatVer.11,500,10000
+   KsatVer.12,500,10000
+   KsatVer.13,500,10000
+   RootingDepth.1,100,5000
+   RootingDepth.2,100,5000
+   RootingDepth.3,100,5000
+   RootingDepth.4,100,5000
+   RootingDepth.5,100,5000
+   RootingDepth.6,100,5000
+   RootingDepth.7,100,5000
+   RootingDepth.8,100,5000
+   RootingDepth.9,100,5000
+   RootingDepth.10,100,5000
+   RootingDepth.11,100,5000
+   RootingDepth.12,100,5000
+   RootingDepth.13,100,5000
+   KsatHorFrac.1,800,1000
+   KsatHorFrac.2,800,1000
+   KsatHorFrac.3,800,1000
+   KsatHorFrac.4,800,1000
+   KsatHorFrac.5,800,1000
+   KsatHorFrac.6,800,1000
+   KsatHorFrac.7,800,1000
+   KsatHorFrac.8,800,1000
+   KsatHorFrac.9,800,1000
+   KsatHorFrac.10,800,1000
+   KsatHorFrac.11,800,1000
+   KsatHorFrac.12,800,1000
+   KsatHorFrac.13,800,1000
+   InfiltCapSoil.1,100,400
+   InfiltCapSoil.2,100,400
+   InfiltCapSoil.3,100,400
+   InfiltCapSoil.4,100,400
+   InfiltCapSoil.5,100,400
+   InfiltCapSoil.6,100,400
+   InfiltCapSoil.7,100,400
+   InfiltCapSoil.8,100,400
+   InfiltCapSoil.9,100,400
+   InfiltCapSoil.10,100,400
+   InfiltCapSoil.11,100,400
+   InfiltCapSoil.12,100,400
+
+JSON configuration
+==================
+
+**File:** ``run_search.json``
+
+.. code-block:: json
+
+   {
+     "model": {
+       "model_dir": "./wflow_gilgel_abay",
+       "wrapper_file": "wrapper_wflow.py",
+       "variables_csv": "./variable_declaration.csv",
+       "objectives_csv": "./objective_declaration.csv"
+     },
+     "algorithm": {
+       "population_size": 60,
+       "generations": 40
+     }
+   }
+
+You can start modestly with 60×40 to verify throughput, then scale.
+
+Running the calibration
+=======================
+
+NSGA‑II baseline
+----------------
+
+.. code-block:: bash
+
+   optiverse search -c run_search.json \
+     --algo nsga2 -j 4 --seed 11 \
+     --label-columns --no-save-final-csvs
+
+NSGA‑III alternative (3 objectives)
+-----------------------------------
+
+With 3 objectives you can also use NSGA‑III with reference directions. Two
+convenient choices are:
+
+- ``--ref-parts 8`` → 45 directions (match population ≈ 45)
+- ``--ref-parts 12`` → 91 directions (match population ≈ 91)
+
+.. code-block:: bash
+
+   # Example with p=12 (91 directions)
+   jq '.algorithm.population_size=91' run_search.json > run_search_nsga3.json
+
+   optiverse search -c run_search_nsga3.json \
+     --algo nsga3 --ref-parts 12 \
+     -j 4 --seed 11 \
+     --label-columns --no-save-final-csvs
+
+(You may keep your population at 60 and still run NSGA‑III; matching the number
+of reference directions generally improves spread.)
+
+Optional wrapper controls
+-------------------------
+
+If your metrics script supports warm‑up/epsilon factors, you can pass them as
+environment variables:
+
+.. code-block:: bash
+
+   WRAPPER_WARMUP_YEARS=1 WRAPPER_EPS_FACTOR=0.25 \
+   optiverse search -c run_search.json --algo nsga2 -j 4 --seed 11
+
+Outputs & analysis
+==================
+
+- **History**: ``results/history_seed{SEED}.csv`` — all generations in one file
+- **Global front** (optionally ε‑thinned):
+
+  .. code-block:: bash
+
+     optiverse front --epsilon 0.01
+     # → results/pareto_front_all.csv
+
+- **Normalized HV** (wide format by seed):
+
+  .. code-block:: bash
+
+     optiverse hypervolume
+     # → results/hypervolume.csv
+
+Troubleshooting
+===============
+
+- **Parallelism stalls or runs one at a time**
+  - Ensure the wrapper runs the batch/script with ``cwd=model_folder`` and
+    avoid ``shell=True`` unless necessary.
+  - If using Julia, set a **local** depot via
+    ``JULIA_PROJECT`` and ``JULIA_DEPOT_PATH`` in the wrapper to avoid global
+    cache contention when multiple workers start simultaneously.
+
+- **No objectives written**
+  - Confirm the wrapper ends by writing a valid ``objective_values.csv`` with
+    the exact headers ``Name,Value``.
+
+- **Mixed population sizes in one history**
+  - Make sure you are not mixing results from different experiments into the
+    same ``results/`` folder with the same ``--seed``.
+  - Keep population size consistent within a single experiment; if you resume
+    with checkpoints, the population is dictated by the checkpoint.
+
+- **Checkpoint/resume for long jobs**
+
+  .. code-block:: bash
+
+     optiverse search ... --checkpoint-every 1 --resume-latest
+
+Appendix B (expected metrics format)
+====================================
+
+If your metrics script writes ``metrics.txt``, it must contain **one line** with
+three comma‑separated values in the following order:
+
+.. code-block:: text
+
+   KGEp,logNSE,bias_score
+
+Example:
+
+.. code-block:: text
+
+   0.76,0.81,0.04

@@ -1,0 +1,218 @@
+.. _tutorial-toy6:
+
+===========================================
+Tutorial: Six‑Objective Toy Optimization
+===========================================
+
+Goal
+====
+
+This tutorial walks through a complete experiment on a **six‑objective** toy
+problem designed to highlight the strengths of **NSGA‑III** (and contrast it
+with NSGA‑II). You will:
+
+1. Create a minimal simulator wrapper (pure Python; no external tools).
+2. Define variables and objectives via CSV.
+3. Run **NSGA‑II** and **NSGA‑III** using :ref:`optiverse search <cli>`.
+4. Extract the global front and compute normalized hypervolume (HV).
+
+Why NSGA‑III here?
+------------------
+
+With six objectives, Pareto dominance becomes less discriminative and diversity
+maintenance becomes crucial. NSGA‑III’s **reference‑direction niching** is
+tailor‑made for such **many‑objective** scenarios and typically yields broader,
+more uniform coverage of the front than NSGA‑II.
+
+Directory layout
+================
+
+Create a folder, e.g., ``examples/toy_6obj/``:
+
+.. code-block:: text
+
+   examples/toy_6obj/
+   ├─ toy_model/
+   │  └─ wrapper_toy6.py
+   ├─ variable_declaration.csv
+   ├─ objective_declaration.csv
+   └─ run_search.json
+
+Step 1 — Wrapper
+================
+
+**File:** ``examples/toy_6obj/toy_model/wrapper_toy6.py``
+
+.. code-block:: python
+
+   # examples/toy_6obj/toy_model/wrapper_toy6.py
+   from __future__ import annotations
+   import csv
+   import os
+
+   def _read_variable_values(model_folder: str) -> dict[str, float]:
+       path = os.path.join(model_folder, "variable_values.csv")
+       vals: dict[str, float] = {}
+       with open(path, "r", newline="") as f:
+           r = csv.DictReader(f)
+           for row in r:
+               vals[str(row["Name"])] = float(row["Value"])
+       return vals
+
+   def _write_objectives(model_folder: str, obj: dict[str, float]) -> None:
+       path = os.path.join(model_folder, "objective_values.csv")
+       with open(path, "w", newline="") as f:
+           w = csv.writer(f)
+           w.writerow(["Name", "Value"])
+           for k, v in obj.items():
+               w.writerow([k, v])
+
+   def search_and_apply_variables(model_folder: str) -> None:
+       xs = list(_read_variable_values(model_folder).values())
+
+       # Five "pulls" toward different centers + one sum objective (maximize)
+       def sq(center: float) -> float:
+           return sum((v - center) * (v - center) for v in xs)
+
+       f1 = sq(0.00)     # minimize
+       f2 = sq(1.00)     # minimize
+       f3 = sq(0.25)     # minimize
+       f4 = sq(0.50)     # minimize
+       f5 = sq(0.75)     # minimize
+       f6 = sum(xs)      # maximize (declared as maximize in CSV)
+
+       _write_objectives(model_folder, {
+           "f1_min_sq_0.00": f1,
+           "f2_min_sq_1.00": f2,
+           "f3_min_sq_0.25": f3,
+           "f4_min_sq_0.50": f4,
+           "f5_min_sq_0.75": f5,
+           "f6_sum_max": f6,
+       })
+
+Step 2 — Variables and Objectives CSV
+=====================================
+
+**File:** ``examples/toy_6obj/variable_declaration.csv``
+
+Here we use 10 variables in ``[0, 1]``.
+
+.. code-block:: csv
+
+   Name,Upper_bound,Lower_bound
+   x1,1,0
+   x2,1,0
+   x3,1,0
+   x4,1,0
+   x5,1,0
+   x6,1,0
+   x7,1,0
+   x8,1,0
+   x9,1,0
+   x10,1,0
+
+**File:** ``examples/toy_6obj/objective_declaration.csv``
+
+.. code-block:: csv
+
+   Name,Objective
+   f1_min_sq_0.00,minimize
+   f2_min_sq_1.00,minimize
+   f3_min_sq_0.25,minimize
+   f4_min_sq_0.50,minimize
+   f5_min_sq_0.75,minimize
+   f6_sum_max,maximize
+
+Step 3 — JSON configuration
+===========================
+
+**File:** ``examples/toy_6obj/run_search.json``
+
+.. code-block:: json
+
+   {
+     "model": {
+       "model_dir": "./toy_model",
+       "wrapper_file": "wrapper_toy6.py",
+       "variables_csv": "../variable_declaration.csv",
+       "objectives_csv": "../objective_declaration.csv"
+     },
+     "algorithm": {
+       "population_size": 120,
+       "generations": 50
+     }
+   }
+
+Step 4 — Run NSGA‑II (baseline)
+===============================
+
+.. code-block:: bash
+
+   cd examples/toy_6obj
+
+   # NSGA‑II baseline
+   optiverse search -c run_search.json \
+     --algo nsga2 -j 4 --seed 7 \
+     --label-columns --no-save-final-csvs
+
+This writes:
+
+- ``results/history_seed7.csv``
+
+Step 5 — Run NSGA‑III (many‑objective)
+======================================
+
+For six objectives, NSGA‑III benefits from **reference directions**. With
+Das–Dennis partitions ``p=4`` and ``M=6``, you get **126** directions. Set
+``population_size`` to **126** for a ~1:1 niche match.
+
+Option A (edit JSON once):
+
+.. code-block:: bash
+
+   # If you have jq:
+   jq '.algorithm.population_size=126' run_search.json > run_search_126.json
+
+   optiverse search -c run_search_126.json \
+     --algo nsga3 --ref-parts 4 \
+     -j 4 --seed 7 \
+     --label-columns --no-save-final-csvs
+
+Option B (keep population 120):
+You may still run with 120; NSGA‑III will fill as many reference directions
+as possible (some niches will remain empty).
+
+Step 6 — Analyze: global front & normalized HV
+==============================================
+
+.. code-block:: bash
+
+   # Global non‑dominated set (optionally ε‑thinned)
+   optiverse front --epsilon 0.01
+   # → results/pareto_front_all.csv
+
+   # Normalized hypervolume (wide format by seed)
+   optiverse hypervolume
+   # → results/hypervolume.csv
+
+What to expect
+==============
+
+- **NSGA‑III** typically yields a **broader, more uniform** spread across the
+  6‑objective trade space than NSGA‑II for similar evaluation budgets.
+- Normalized HV curves should rise faster/higher for NSGA‑III vs NSGA‑II
+  on this toy, especially when population ≈ number of reference directions.
+
+Tips & Troubleshooting
+======================
+
+- Keep each experiment in a **separate results folder** or use different
+  ``--seed`` values to avoid mixing histories.
+- For long runs, add checkpoints:
+
+  .. code-block:: bash
+
+     optiverse search ... --checkpoint-every 1 --resume-latest
+
+- If you see any generation with more rows than the population size,
+  ensure the algorithm’s survival step **truncates** the splitting front.

@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modules and Architecture (Key Parts) &mdash; Optiverse Documentation 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorial.html" />
+    <link rel="prev" title="Command Line Interface" href="command_line.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Optiverse Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">OptiVerse: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules and Architecture (Key Parts)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#highlevel-architecture">High‑level architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-packages">Core packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#optiverse-cli-app-cli-entry-points"><code class="docutils literal notranslate"><span class="pre">optiverse.cli.app</span></code> (CLI entry points)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optiverse-core-adapters-csv-wrapper-csv-model-adapter"><code class="docutils literal notranslate"><span class="pre">optiverse.core.adapters.csv_wrapper</span></code> (CSV model adapter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optiverse-algos-nsga2-nsgaii"><code class="docutils literal notranslate"><span class="pre">optiverse.algos.nsga2</span></code> (NSGA‑II)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optiverse-algos-nsga3-nsgaiii"><code class="docutils literal notranslate"><span class="pre">optiverse.algos.nsga3</span></code> (NSGA‑III)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optiverse-utils-pareto"><code class="docutils literal notranslate"><span class="pre">optiverse.utils.pareto</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checkpoints-resume">Checkpoints &amp; resume</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#suggested-citation">Suggested citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Optiverse Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Modules and Architecture (Key Parts)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modules-and-architecture-key-parts">
+<span id="modules"></span><h1>Modules and Architecture (Key Parts)<a class="headerlink" href="#modules-and-architecture-key-parts" title="Link to this heading"></a></h1>
+<p>This page gives a curated overview of OptiVerse internals to help you
+extend and maintain the codebase.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#highlevel-architecture" id="id1">High‑level architecture</a></p></li>
+<li><p><a class="reference internal" href="#core-packages" id="id2">Core packages</a></p>
+<ul>
+<li><p><a class="reference internal" href="#optiverse-cli-app-cli-entry-points" id="id3"><code class="docutils literal notranslate"><span class="pre">optiverse.cli.app</span></code> (CLI entry points)</a></p></li>
+<li><p><a class="reference internal" href="#optiverse-core-adapters-csv-wrapper-csv-model-adapter" id="id4"><code class="docutils literal notranslate"><span class="pre">optiverse.core.adapters.csv_wrapper</span></code> (CSV model adapter)</a></p></li>
+<li><p><a class="reference internal" href="#optiverse-algos-nsga2-nsgaii" id="id5"><code class="docutils literal notranslate"><span class="pre">optiverse.algos.nsga2</span></code> (NSGA‑II)</a></p></li>
+<li><p><a class="reference internal" href="#optiverse-algos-nsga3-nsgaiii" id="id6"><code class="docutils literal notranslate"><span class="pre">optiverse.algos.nsga3</span></code> (NSGA‑III)</a></p></li>
+<li><p><a class="reference internal" href="#optiverse-utils-pareto" id="id7"><code class="docutils literal notranslate"><span class="pre">optiverse.utils.pareto</span></code></a></p></li>
+<li><p><a class="reference internal" href="#checkpoints-resume" id="id8">Checkpoints &amp; resume</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="highlevel-architecture">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">High‑level architecture</a><a class="headerlink" href="#highlevel-architecture" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>+------------------------------+
+|        CLI (Typer)           |
+|  search | front | hv | ver   |
++------------------------------+
+             |
+             v
++------------------------------+        +----------------------------+
+|   Algorithms (ask / tell)    |&lt;------&gt;|    utils.pareto            |
+|   NSGA2 | NSGA3              |        |   - nondominated_mask      |
++------------------------------+        |   - epsilon_archive        |
+             |                          +----------------------------+
+             v
++------------------------------+
+|   Evaluation Pipeline        |
+|   - CSV adapter              |
+|   - Lean workers (subprocs)  |
++------------------------------+
+</pre></div>
+</div>
+</section>
+<section id="core-packages">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Core packages</a><a class="headerlink" href="#core-packages" title="Link to this heading"></a></h2>
+<section id="optiverse-cli-app-cli-entry-points">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">optiverse.cli.app</span></code> (CLI entry points)</a><a class="headerlink" href="#optiverse-cli-app-cli-entry-points" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Implements the commands documented in <a class="reference internal" href="command_line.html#cli"><span class="std std-ref">Command Line Interface</span></a>.</p></li>
+<li><p>Spawns a pool of workers (processes or threads) to evaluate candidates.</p></li>
+<li><p>Writes the single‑file per‑seed <strong>history</strong> and optional CSVs.</p></li>
+<li><p>Manages <strong>checkpoint</strong> save/load and <strong>resume</strong> semantics.</p></li>
+<li><p>For analysis:
+- <code class="docutils literal notranslate"><span class="pre">front</span></code> computes the global non‑dominated set (optionally ε‑thinned).
+- <code class="docutils literal notranslate"><span class="pre">hypervolume</span></code> computes normalized HV (wide format).</p></li>
+</ul>
+</section>
+<section id="optiverse-core-adapters-csv-wrapper-csv-model-adapter">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">optiverse.core.adapters.csv_wrapper</span></code> (CSV model adapter)</a><a class="headerlink" href="#optiverse-core-adapters-csv-wrapper-csv-model-adapter" title="Link to this heading"></a></h3>
+<p><strong>Wrapper contract</strong></p>
+<ul>
+<li><p>OptiVerse writes <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> in a <strong>working copy</strong> of your model.</p></li>
+<li><p>Your wrapper must define:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">search_and_apply_variables</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p>Your wrapper must write <code class="docutils literal notranslate"><span class="pre">objective_values.csv</span></code> with two columns: <code class="docutils literal notranslate"><span class="pre">Name,Value</span></code>.</p></li>
+<li><p>The adapter flips sign for objectives declared as <em>maximize</em> to ensure a pure
+minimization view inside the algorithms.</p></li>
+</ul>
+<p><strong>Working copies &amp; cleanup</strong></p>
+<ul class="simple">
+<li><p>Each evaluation runs in a <strong>fresh working copy</strong>, then the directory is
+deleted (unless <code class="docutils literal notranslate"><span class="pre">--keep-work-on-error</span></code>).</p></li>
+<li><p>The adapter uses robust deletion with retries (Windows‑friendly).</p></li>
+</ul>
+</section>
+<section id="optiverse-algos-nsga2-nsgaii">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">optiverse.algos.nsga2</span></code> (NSGA‑II)</a><a class="headerlink" href="#optiverse-algos-nsga2-nsgaii" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NSGA2(population_size,</span> <span class="pre">seed=None)</span></code> exposes <code class="docutils literal notranslate"><span class="pre">initialize(n_var,</span> <span class="pre">bounds)</span></code> and
+the GA loop via <code class="docutils literal notranslate"><span class="pre">ask(pop,</span> <span class="pre">fit,</span> <span class="pre">bounds)</span></code> → <code class="docutils literal notranslate"><span class="pre">tell(pop,</span> <span class="pre">fit,</span> <span class="pre">children,</span> <span class="pre">fit_children)</span></code>.</p></li>
+<li><p><strong>Survival</strong>:
+- Combine parents and offspring → fast non‑dominated sort
+- Fill full fronts; on the splitting front, keep the <strong>largest crowding distance</strong> points</p></li>
+<li><p><strong>Variation</strong>: SBX crossover (+ polynomial mutation)</p></li>
+<li><p>Recommended when M ≤ 3 or as a strong baseline for most problems.</p></li>
+</ul>
+<p id="modules-nsga2">Implementation notes:</p>
+<ul>
+<li><p>Ensure the splitting front is <strong>truncated</strong> (never exceed <code class="docutils literal notranslate"><span class="pre">population_size</span></code>).</p></li>
+<li><p>Keep an invariant check during development:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="n">survivors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">population_size</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="optiverse-algos-nsga3-nsgaiii">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">optiverse.algos.nsga3</span></code> (NSGA‑III)</a><a class="headerlink" href="#optiverse-algos-nsga3-nsgaiii" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Many‑objective extension of NSGA‑II, replacing crowding with <strong>reference‑direction niching</strong>.</p></li>
+<li><p><strong>Reference directions</strong>
+- Generated via Das–Dennis (<code class="docutils literal notranslate"><span class="pre">--ref-parts</span></code>) or loaded from CSV (<code class="docutils literal notranslate"><span class="pre">--ref-dirs-csv</span></code>)</p></li>
+<li><p><strong>Survival</strong>
+- Combine parents &amp; offspring → non‑dominated sort
+- Truncate the splitting front with <strong>niching</strong>:</p>
+<blockquote>
+<div><p>fill under‑represented directions first, choose the smallest perpendicular distance</p>
+</div></blockquote>
+</li>
+<li><p>Works well when M ≥ 4.</p></li>
+</ul>
+<p id="modules-nsga3">Implementation notes:</p>
+<ul class="simple">
+<li><p>The niching selector must return <strong>at most</strong> <code class="docutils literal notranslate"><span class="pre">k</span></code> indices when truncating.</p></li>
+<li><p>Normalize objective values before association (min‑max normalization suffices
+in practice for robustness).</p></li>
+</ul>
+</section>
+<section id="optiverse-utils-pareto">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">optiverse.utils.pareto</span></code></a><a class="headerlink" href="#optiverse-utils-pareto" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nondominated_mask(F)</span></code>: boolean mask of non‑dominated rows for a minimization array</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">epsilon_archive(F,</span> <span class="pre">eps)</span></code>: ε‑box thinning (useful for density control in fronts/HV)</p></li>
+<li><p>Used by both CLI analysis commands and, optionally, in algorithm prototypes.</p></li>
+</ul>
+</section>
+<section id="checkpoints-resume">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Checkpoints &amp; resume</a><a class="headerlink" href="#checkpoints-resume" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Checkpoints are single‑file <code class="docutils literal notranslate"><span class="pre">.npz</span></code> with:
+population, fitness, RNG state, variable/objective names, bounds,
+history path, model_dir, and last generation index.</p></li>
+<li><p>On <strong>resume</strong>, RNG state and arrays are restored and evaluation continues
+seamlessly from the saved generation.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="command_line.html" class="btn btn-neutral float-left" title="Command Line Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Mohammed Basheer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
