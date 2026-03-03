@@ -1,0 +1,171 @@
+chirps:
+  data_type: RasterDataset
+  version: v2.0
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/CHIRPS_daily_1991_2010_Nile_clipped50.nc
+  driver: netcdf
+  unit_add:
+    time: 86400
+  meta:
+    category: meteo
+    paper_doi: 10.3133/ds832
+    paper_ref: Funk et al (2014)
+    source_license: CC
+    source_url: https://www.chc.ucsb.edu/data/chirps
+  crs: 4326
+era5:
+  data_type: RasterDataset
+  version: v1.0
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/era5_pet_mmday_fixed_x3.nc
+  driver: netcdf
+  meta:
+    category: meteo
+    paper_ref: Hersbach et al (2019)
+    source_url: https://doi.org/10.24381/cds.bd0915c6
+  crs: 4326
+globcover:
+  data_type: RasterDataset
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/landuse_bnb.tif
+  driver: raster
+  meta:
+    category: landuse & landcover
+    paper_doi: 10.1594/PANGAEA.787668
+    paper_ref: Arino et al (2012)
+    source_license: CC-BY-3.0
+    source_url: http://due.esrin.esa.int/page_globcover.php
+  crs: 4326
+globcover_mapping_default:
+  data_type: DataFrame
+  path: /project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/lulc/globcover_mapping.csv
+  driver: csv
+  driver_kwargs:
+    index_col: 0
+    dtype:
+      landuse: int16
+      Kext: float32
+      N: float32
+      PathFrac: float32
+      RootingDepth: float32
+      Sl: float32
+      Swood: float32
+      WaterFrac: float32
+      kc: float32
+      alpha_h1: int16
+      h1: int16
+      h2: int16
+      h3_high: int16
+      h3_low: int16
+      h4: int16
+      USLE_C: float32
+      Cov_River: float32
+  meta:
+    category: landuse
+    source_info: landuse parameters based on globcover classification (http://due.esrin.esa.int/page_globcover.php)
+    source_version: 1.0
+grdc:
+  data_type: GeoDataFrame
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/grdc_Tana.csv
+  driver: csv
+  meta:
+    category: gauges
+    source_info: GRDC-Station Catalogue, last downloaded 2020-07-16
+    source_license: https://www.bafg.de/GRDC/EN/02_srvcs/21_tmsrs/210_prtl/tou.html;jsessionid=A56D50D4A36D3D8707CBF00CBD71F106.live11291?nn=2862854
+    source_url: https://portal.grdc.bafg.de/applications/public.html?publicuser=PublicUser#dataDownload/StationCatalogue
+  crs: 4326
+hydro_lakes:
+  data_type: GeoDataFrame
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/hydro_lakes_mjr5.gpkg
+  driver: vector
+  unit_mult:
+    Area_avg: 1000000.0
+  meta:
+    category: surface water
+    source_author: Arjen Haag
+    source_info: HydroLAKES.v10_extract
+    source_version: 1.0
+  crs: 4326
+hydro_rivers_af:
+  data_type: GeoDataFrame
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/HydroRIVERS_v10_af_clean.gpkg
+  driver: vector
+  meta:
+    category: hydrography
+  crs: 4326
+merit_hydro:
+  data_type: RasterDataset
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/Merit_T/*.tif
+  driver: raster
+  meta:
+    category: hydrography
+  crs: 4326
+modis_lai:
+  data_type: RasterDataset
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/modis_lai_monthly_climatology.nc
+  driver: netcdf
+  meta:
+    category: landuse & landcover
+    paper_doi: 10.5067/MODIS/MCD15A3H.006
+    paper_ref: Myneni et al (2015)
+    source_license: https://lpdaac.usgs.gov/data/data-citation-and-policies/
+    source_url: https://lpdaac.usgs.gov/products/mcd15a3hv006/
+    source_version: MCD15A3H V006
+    lai: 0.1
+  crs: 4326
+roughness_river_mapping_default:
+  data_type: DataFrame
+  path: /project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/wflow/N_river_mapping.csv
+  driver: csv
+  driver_kwargs:
+    index_col: 0
+    dtype:
+      N_River: float32
+  meta:
+    category: hydrography
+    source_info: Mapping between streamorder and river Manning roughness
+    source_version: 1.0
+soilgrids_2020:
+  data_type: RasterDataset
+  path: /project/6087451/alaminie/Nile/Data_Catalog_Tana/SoilGrids_N/*.tif
+  driver: raster
+  unit_mult:
+    bd_sl1: 0.01
+    bd_sl2: 0.01
+    bd_sl3: 0.01
+    bd_sl4: 0.01
+    bd_sl5: 0.01
+    bd_sl6: 0.01
+    clyppt_sl1: 0.1
+    clyppt_sl2: 0.1
+    clyppt_sl3: 0.1
+    clyppt_sl4: 0.1
+    clyppt_sl5: 0.1
+    clyppt_sl6: 0.1
+    sltppt_sl1: 0.1
+    sltppt_sl2: 0.1
+    sltppt_sl3: 0.1
+    sltppt_sl4: 0.1
+    sltppt_sl5: 0.1
+    sltppt_sl6: 0.1
+    sndppt_sl1: 0.1
+    sndppt_sl2: 0.1
+    sndppt_sl3: 0.1
+    sndppt_sl4: 0.1
+    sndppt_sl5: 0.1
+    sndppt_sl6: 0.1
+    oc_sl1: 0.1
+    oc_sl2: 0.1
+    oc_sl3: 0.1
+    oc_sl4: 0.1
+    oc_sl5: 0.1
+    oc_sl6: 0.1
+    ph_sl1: 0.1
+    ph_sl2: 0.1
+    ph_sl3: 0.1
+    ph_sl4: 0.1
+    ph_sl5: 0.1
+    ph_sl6: 0.1
+  meta:
+    category: soil
+    paper_doi: 10.5194/soil-7-217-2021
+    source_url: https://www.isric.org/explore/soilgrids
+    source_version: 2020
+  crs: 4326

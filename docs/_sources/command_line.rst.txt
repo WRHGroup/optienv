@@ -1,7 +1,150 @@
+.. _cli:
+
+========================
 Command Line Interface
-=======================
+========================
 
-.. toctree::
-   :maxdepth: 2
-   
+This page documents the OptiVerse CLI. The main workflow is:
 
+1. Prepare a JSON configuration and a model wrapper (CSV contract)
+2. Run an evolutionary **search**
+3. Analyze results with **front** and **hypervolume**
+
+.. contents::
+   :local:
+   :depth: 2
+
+
+search
+======
+
+``optiverse search`` runs the evolutionary optimization and writes a single
+history file per seed in ``results/``.
+
+Basic usage
+-----------
+
+.. code-block:: bash
+
+   optiverse search \
+     -c path/to/run_sim.json \
+     -j 4 --seed 7 \
+     --label-columns --no-save-final-csvs
+
+.. rubric:: Common options
+
+- ``-c, --config PATH``: JSON config (model, variables, objectives, alg. params)
+- ``--algo nsga2|nsga3``: algorithm
+- ``--seed INT``: seed; suffixes the history filename
+- ``-j, --max-workers INT``: parallel workers
+- ``--backend process|thread``: process (default) or threads
+- ``--label-columns``: write objective and variable names as headers
+- ``--no-save-final-csvs``: keep only the single history file
+
+.. rubric:: NSGA‑III reference directions
+
+- ``--ref-parts INT``: Das–Dennis partitions per axis
+- ``--ref-dirs-csv PATH``: CSV with custom reference directions (rows are dirs)
+
+.. rubric:: Resume / checkpoint
+
+- ``--checkpoint-every N``: write checkpoint every N generations (``0`` = off)
+- ``--checkpoint-path PATH``: custom checkpoint path (default: ``results/checkpoint.npz``)
+- ``--resume-latest``: resume from the default checkpoint
+- ``--resume-from PATH``: resume from a specific checkpoint
+
+What gets written
+-----------------
+
+- ``results/history_seed{SEED}.csv`` — all generations in one file
+- Optional (unless ``--no-save-final-csvs``):
+  - ``results/population_seed{SEED}.csv``
+  - ``results/fitness_seed{SEED}.csv``
+  - ``results/nd_mask_seed{SEED}.csv``
+
+History layout
+--------------
+
+.. code-block:: text
+
+   generation,index,<objective_1>,...,<objective_M>,<x1>,...,<xN>,nd
+
+- Objectives appear first (minimization perspective, names if ``--label-columns``)
+- Decision variables follow
+- ``nd`` = 1 if the individual is non‑dominated within that generation’s population
+
+
+front
+=====
+
+.. _cli-front:
+
+``optiverse front`` extracts a **global** Pareto front across all seeds and generations.
+
+.. code-block:: bash
+
+   optiverse front
+   # → results/pareto_front_all.csv
+
+Options:
+
+- ``--epsilon EPS``: optional ε‑box thinning (e.g., ``0.01``)
+
+Notes:
+
+- Objective sense is auto‑detected from your objective declaration (if available).
+- The output includes a ``seed`` column.
+
+
+hypervolume
+===========
+
+.. _cli-hv:
+
+``optiverse hypervolume`` computes **normalized** hypervolume per generation for each seed
+and writes a wide CSV (one HV column per seed).
+
+.. code-block:: bash
+
+   optiverse hypervolume
+   # → results/hypervolume.csv
+
+Notes:
+
+- Normalization reads all histories, converts to minimization, and scales to **[0,1]**
+  before using the reference point ``r = (1,1,...,1)``.
+- For ≥ 3 objectives, install ``pymoo`` to enable the HV indicator.
+
+Options:
+
+- ``--epsilon EPS``: thin each generation’s front before HV (speeds up; smooths curves)
+
+version
+=======
+
+.. code-block:: bash
+
+   optiverse version
+
+Prints the current package version.
+
+
+Tips & best practices
+=====================
+
+- Keep a **separate results folder** per experiment (or vary ``--seed``) to avoid mixing runs.
+- For NSGA‑III, it is common to set **population size ≈ number of reference directions**.
+- Use **checkpoints** for long runs and **resume** if the job is preempted.
+     --algo nsga2 \
+     -j 4 --seed 7 \
+     --label-columns \
+     --no-save-final-csvs
+
+NSGA‑III with reference directions
+----------------------------------
+
+.. code-block:: bash
+
+   # Das–Dennis with 4 partitions
+   optiverse search \
+     -c path/to/run_sim.json \

@@ -1,6 +1,38 @@
-Introduction
+========================
+OptiVerse: Introduction
+========================
+
+**OptiVerse** is a lightweight, simulator‑friendly framework for
+**multi‑objective optimization (MOO)**. It wraps external models with a
+simple CSV interface and runs evolutionary algorithms—currently
+:ref:`NSGA‑II <modules-nsga2>` and :ref:`NSGA‑III <modules-nsga3>`—at scale.
+
+Design goals
 ============
 
-General description
--------------------
+- **Reproducible experiments**
+  Single-file per‑seed histories, optional checkpoints/resume, and fixed seeds.
+- **Simulator integration**
+  CSV adapter reads decision vectors and writes objectives—no refactoring in your model.
+- **Many‑objective capability**
+  NSGA‑III with reference directions for high‑dimensional objectives (≥ 4).
+- **Actionable analysis**
+  Global Pareto front extraction and **normalized hypervolume (HV)**
+  computation, including density control via ``--epsilon``.
 
+Key features
+============
+
+- **Two algorithms**
+  - NSGA‑II (dominance ranking + crowding distance)
+  - NSGA‑III (dominance ranking + reference‑direction niching)
+- **CSV model adapter**
+  - Writes ``variable_values.csv`` for your wrapper
+  - Expects ``objective_values.csv`` back from the wrapper
+  - Converts *maximize* objectives to minimization internally
+- **Results management**
+  - One history CSV per seed: ``results/history_seed{SEED}.csv``
+  - Optional final CSVs: population, fitness, non‑dominated (nd) mask
+- **Analysis**
+  - :ref:`front <cli-front>`: global non‑dominated set (optionally thinned by ε‑boxes)
+  - :ref:`hypervolume <cli-hv>`: normalized HV per generation (wide format)

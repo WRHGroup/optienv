@@ -1,2 +1,36 @@
+.. _install:
+
+=============
 Installation
+=============
+
+Requirements
 ============
+
+- **Python**: 3.10+ (Linux / macOS / Windows)
+
+Install from PyPI
+=================
+
+.. code-block:: bash
+
+   pip install optiverse
+
+Install for development
+=======================
+
+.. code-block:: bash
+
+   git clone https://github.com/WRHGroup/optiverse.git
+   cd optiverse
+   pip install -e .
+
+Smoke tests
+===========
+
+.. code-block:: bash
+
+   optiverse --help
+   optiverse search --help
+   optiverse front --help
+   optiverse hypervolume --help

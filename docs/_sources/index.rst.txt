@@ -17,6 +17,7 @@ The source code of Optiverse is hosted on the following `GitHub Repository <http
    introduction
    installation
    command_line
+   modules
    tutorial
    license
    citation

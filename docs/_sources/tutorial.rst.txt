@@ -1,2 +1,7 @@
 Tutorials
 ==========
+.. toctree::
+   :maxdepth: 2
+
+   tutorial_toy6
+   tutorial_wflow

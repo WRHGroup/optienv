@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: Six‑Objective Toy Optimization &mdash; Optiverse Documentation 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: Calibrating a Wflow Hydrological Model" href="tutorial_wflow.html" />
+    <link rel="prev" title="Tutorials" href="tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Optiverse Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">OptiVerse: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules and Architecture (Key Parts)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tutorial: Six‑Objective Toy Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#goal">Goal</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-nsgaiii-here">Why NSGA‑III here?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#directory-layout">Directory layout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-wrapper">Step 1 — Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-variables-and-objectives-csv">Step 2 — Variables and Objectives CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-json-configuration">Step 3 — JSON configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-run-nsgaii-baseline">Step 4 — Run NSGA‑II (baseline)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-run-nsgaiii-manyobjective">Step 5 — Run NSGA‑III (many‑objective)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-6-analyze-global-front-normalized-hv">Step 6 — Analyze: global front &amp; normalized HV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-to-expect">What to expect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tips-troubleshooting">Tips &amp; Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_wflow.html">Tutorial: Calibrating a Wflow Hydrological Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#suggested-citation">Suggested citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Optiverse Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Tutorial: Six‑Objective Toy Optimization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial_toy6.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-sixobjective-toy-optimization">
+<span id="tutorial-toy6"></span><h1>Tutorial: Six‑Objective Toy Optimization<a class="headerlink" href="#tutorial-sixobjective-toy-optimization" title="Link to this heading"></a></h1>
+<section id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Link to this heading"></a></h2>
+<p>This tutorial walks through a complete experiment on a <strong>six‑objective</strong> toy
+problem designed to highlight the strengths of <strong>NSGA‑III</strong> (and contrast it
+with NSGA‑II). You will:</p>
+<ol class="arabic simple">
+<li><p>Create a minimal simulator wrapper (pure Python; no external tools).</p></li>
+<li><p>Define variables and objectives via CSV.</p></li>
+<li><p>Run <strong>NSGA‑II</strong> and <strong>NSGA‑III</strong> using <a class="reference internal" href="command_line.html#cli"><span class="std std-ref">optiverse search</span></a>.</p></li>
+<li><p>Extract the global front and compute normalized hypervolume (HV).</p></li>
+</ol>
+<section id="why-nsgaiii-here">
+<h3>Why NSGA‑III here?<a class="headerlink" href="#why-nsgaiii-here" title="Link to this heading"></a></h3>
+<p>With six objectives, Pareto dominance becomes less discriminative and diversity
+maintenance becomes crucial. NSGA‑III’s <strong>reference‑direction niching</strong> is
+tailor‑made for such <strong>many‑objective</strong> scenarios and typically yields broader,
+more uniform coverage of the front than NSGA‑II.</p>
+</section>
+</section>
+<section id="directory-layout">
+<h2>Directory layout<a class="headerlink" href="#directory-layout" title="Link to this heading"></a></h2>
+<p>Create a folder, e.g., <code class="docutils literal notranslate"><span class="pre">examples/toy_6obj/</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>examples/toy_6obj/
+├─ toy_model/
+│  └─ wrapper_toy6.py
+├─ variable_declaration.csv
+├─ objective_declaration.csv
+└─ run_search.json
+</pre></div>
+</div>
+</section>
+<section id="step-1-wrapper">
+<h2>Step 1 — Wrapper<a class="headerlink" href="#step-1-wrapper" title="Link to this heading"></a></h2>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">examples/toy_6obj/toy_model/wrapper_toy6.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># examples/toy_6obj/toy_model/wrapper_toy6.py</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">_read_variable_values</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;variable_values.csv&quot;</span><span class="p">)</span>
+    <span class="n">vals</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">vals</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vals</span>
+
+<span class="k">def</span> <span class="nf">_write_objectives</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;objective_values.csv&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">search_and_apply_variables</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_read_variable_values</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1"># Five &quot;pulls&quot; toward different centers + one sum objective (maximize)</span>
+    <span class="k">def</span> <span class="nf">sq</span><span class="p">(</span><span class="n">center</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">v</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">)</span>
+
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">sq</span><span class="p">(</span><span class="mf">0.00</span><span class="p">)</span>     <span class="c1"># minimize</span>
+    <span class="n">f2</span> <span class="o">=</span> <span class="n">sq</span><span class="p">(</span><span class="mf">1.00</span><span class="p">)</span>     <span class="c1"># minimize</span>
+    <span class="n">f3</span> <span class="o">=</span> <span class="n">sq</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>     <span class="c1"># minimize</span>
+    <span class="n">f4</span> <span class="o">=</span> <span class="n">sq</span><span class="p">(</span><span class="mf">0.50</span><span class="p">)</span>     <span class="c1"># minimize</span>
+    <span class="n">f5</span> <span class="o">=</span> <span class="n">sq</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>     <span class="c1"># minimize</span>
+    <span class="n">f6</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>      <span class="c1"># maximize (declared as maximize in CSV)</span>
+
+    <span class="n">_write_objectives</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s2">&quot;f1_min_sq_0.00&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+        <span class="s2">&quot;f2_min_sq_1.00&quot;</span><span class="p">:</span> <span class="n">f2</span><span class="p">,</span>
+        <span class="s2">&quot;f3_min_sq_0.25&quot;</span><span class="p">:</span> <span class="n">f3</span><span class="p">,</span>
+        <span class="s2">&quot;f4_min_sq_0.50&quot;</span><span class="p">:</span> <span class="n">f4</span><span class="p">,</span>
+        <span class="s2">&quot;f5_min_sq_0.75&quot;</span><span class="p">:</span> <span class="n">f5</span><span class="p">,</span>
+        <span class="s2">&quot;f6_sum_max&quot;</span><span class="p">:</span> <span class="n">f6</span><span class="p">,</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-variables-and-objectives-csv">
+<h2>Step 2 — Variables and Objectives CSV<a class="headerlink" href="#step-2-variables-and-objectives-csv" title="Link to this heading"></a></h2>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">examples/toy_6obj/variable_declaration.csv</span></code></p>
+<p>Here we use 10 variables in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.</p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>Name,Upper_bound,Lower_bound
+x1,1,0
+x2,1,0
+x3,1,0
+x4,1,0
+x5,1,0
+x6,1,0
+x7,1,0
+x8,1,0
+x9,1,0
+x10,1,0
+</pre></div>
+</div>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">examples/toy_6obj/objective_declaration.csv</span></code></p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>Name,Objective
+f1_min_sq_0.00,minimize
+f2_min_sq_1.00,minimize
+f3_min_sq_0.25,minimize
+f4_min_sq_0.50,minimize
+f5_min_sq_0.75,minimize
+f6_sum_max,maximize
+</pre></div>
+</div>
+</section>
+<section id="step-3-json-configuration">
+<h2>Step 3 — JSON configuration<a class="headerlink" href="#step-3-json-configuration" title="Link to this heading"></a></h2>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">examples/toy_6obj/run_search.json</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;model_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./toy_model&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;wrapper_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wrapper_toy6.py&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;variables_csv&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;../variable_declaration.csv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;objectives_csv&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;../objective_declaration.csv&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;algorithm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;population_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;generations&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-run-nsgaii-baseline">
+<h2>Step 4 — Run NSGA‑II (baseline)<a class="headerlink" href="#step-4-run-nsgaii-baseline" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/toy_6obj
+
+<span class="c1"># NSGA‑II baseline</span>
+optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
+</pre></div>
+</div>
+<p>This writes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results/history_seed7.csv</span></code></p></li>
+</ul>
+</section>
+<section id="step-5-run-nsgaiii-manyobjective">
+<h2>Step 5 — Run NSGA‑III (many‑objective)<a class="headerlink" href="#step-5-run-nsgaiii-manyobjective" title="Link to this heading"></a></h2>
+<p>For six objectives, NSGA‑III benefits from <strong>reference directions</strong>. With
+Das–Dennis partitions <code class="docutils literal notranslate"><span class="pre">p=4</span></code> and <code class="docutils literal notranslate"><span class="pre">M=6</span></code>, you get <strong>126</strong> directions. Set
+<code class="docutils literal notranslate"><span class="pre">population_size</span></code> to <strong>126</strong> for a ~1:1 niche match.</p>
+<p>Option A (edit JSON once):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you have jq:</span>
+jq<span class="w"> </span><span class="s1">&#39;.algorithm.population_size=126&#39;</span><span class="w"> </span>run_search.json<span class="w"> </span>&gt;<span class="w"> </span>run_search_126.json
+
+optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search_126.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--algo<span class="w"> </span>nsga3<span class="w"> </span>--ref-parts<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
+</pre></div>
+</div>
+<p>Option B (keep population 120):
+You may still run with 120; NSGA‑III will fill as many reference directions
+as possible (some niches will remain empty).</p>
+</section>
+<section id="step-6-analyze-global-front-normalized-hv">
+<h2>Step 6 — Analyze: global front &amp; normalized HV<a class="headerlink" href="#step-6-analyze-global-front-normalized-hv" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Global non‑dominated set (optionally ε‑thinned)</span>
+optiverse<span class="w"> </span>front<span class="w"> </span>--epsilon<span class="w"> </span><span class="m">0</span>.01
+<span class="c1"># → results/pareto_front_all.csv</span>
+
+<span class="c1"># Normalized hypervolume (wide format by seed)</span>
+optiverse<span class="w"> </span>hypervolume
+<span class="c1"># → results/hypervolume.csv</span>
+</pre></div>
+</div>
+</section>
+<section id="what-to-expect">
+<h2>What to expect<a class="headerlink" href="#what-to-expect" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>NSGA‑III</strong> typically yields a <strong>broader, more uniform</strong> spread across the
+6‑objective trade space than NSGA‑II for similar evaluation budgets.</p></li>
+<li><p>Normalized HV curves should rise faster/higher for NSGA‑III vs NSGA‑II
+on this toy, especially when population ≈ number of reference directions.</p></li>
+</ul>
+</section>
+<section id="tips-troubleshooting">
+<h2>Tips &amp; Troubleshooting<a class="headerlink" href="#tips-troubleshooting" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Keep each experiment in a <strong>separate results folder</strong> or use different
+<code class="docutils literal notranslate"><span class="pre">--seed</span></code> values to avoid mixing histories.</p></li>
+<li><p>For long runs, add checkpoints:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>search<span class="w"> </span>...<span class="w"> </span>--checkpoint-every<span class="w"> </span><span class="m">1</span><span class="w"> </span>--resume-latest
+</pre></div>
+</div>
+</li>
+<li><p>If you see any generation with more rows than the population size,
+ensure the algorithm’s survival step <strong>truncates</strong> the splitting front.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_wflow.html" class="btn btn-neutral float-right" title="Tutorial: Calibrating a Wflow Hydrological Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Mohammed Basheer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

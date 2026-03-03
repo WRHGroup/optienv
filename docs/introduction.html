@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introduction &mdash; Optiverse Documentation 0.1.1 documentation</title>
+  <title>OptiVerse: Introduction &mdash; Optiverse Documentation 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -44,15 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#general-description">General description</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OptiVerse: Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#design-goals">Design goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key features</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules and Architecture (Key Parts)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#suggested-citation">Suggested citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#acknowledgements">Acknowledgements</a></li>
 </ul>
 
         </div>
@@ -69,7 +73,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Introduction</li>
+      <li class="breadcrumb-item active">OptiVerse: Introduction</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -79,10 +83,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
-<section id="general-description">
-<h2>General description<a class="headerlink" href="#general-description" title="Link to this heading"></a></h2>
+  <section id="optiverse-introduction">
+<h1>OptiVerse: Introduction<a class="headerlink" href="#optiverse-introduction" title="Link to this heading"></a></h1>
+<p><strong>OptiVerse</strong> is a lightweight, simulator‑friendly framework for
+<strong>multi‑objective optimization (MOO)</strong>. It wraps external models with a
+simple CSV interface and runs evolutionary algorithms—currently
+<a class="reference internal" href="modules.html#modules-nsga2"><span class="std std-ref">NSGA‑II</span></a> and <a class="reference internal" href="modules.html#modules-nsga3"><span class="std std-ref">NSGA‑III</span></a>—at scale.</p>
+<section id="design-goals">
+<h2>Design goals<a class="headerlink" href="#design-goals" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Reproducible experiments</strong>
+Single-file per‑seed histories, optional checkpoints/resume, and fixed seeds.</p></li>
+<li><p><strong>Simulator integration</strong>
+CSV adapter reads decision vectors and writes objectives—no refactoring in your model.</p></li>
+<li><p><strong>Many‑objective capability</strong>
+NSGA‑III with reference directions for high‑dimensional objectives (≥ 4).</p></li>
+<li><p><strong>Actionable analysis</strong>
+Global Pareto front extraction and <strong>normalized hypervolume (HV)</strong>
+computation, including density control via <code class="docutils literal notranslate"><span class="pre">--epsilon</span></code>.</p></li>
+</ul>
+</section>
+<section id="key-features">
+<h2>Key features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Two algorithms</strong>
+- NSGA‑II (dominance ranking + crowding distance)
+- NSGA‑III (dominance ranking + reference‑direction niching)</p></li>
+<li><p><strong>CSV model adapter</strong>
+- Writes <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> for your wrapper
+- Expects <code class="docutils literal notranslate"><span class="pre">objective_values.csv</span></code> back from the wrapper
+- Converts <em>maximize</em> objectives to minimization internally</p></li>
+<li><p><strong>Results management</strong>
+- One history CSV per seed: <code class="docutils literal notranslate"><span class="pre">results/history_seed{SEED}.csv</span></code>
+- Optional final CSVs: population, fitness, non‑dominated (nd) mask</p></li>
+<li><p><strong>Analysis</strong>
+- <a class="reference internal" href="command_line.html#cli-front"><span class="std std-ref">front</span></a>: global non‑dominated set (optionally thinned by ε‑boxes)
+- <a class="reference internal" href="command_line.html#cli-hv"><span class="std std-ref">hypervolume</span></a>: normalized HV per generation (wide format)</p></li>
+</ul>
 </section>
 </section>
 

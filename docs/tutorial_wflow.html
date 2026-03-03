@@ -1,0 +1,499 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: Calibrating a Wflow Hydrological Model &mdash; Optiverse Documentation 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="Tutorial: Six‑Objective Toy Optimization" href="tutorial_toy6.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Optiverse Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">OptiVerse: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules and Architecture (Key Parts)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial_toy6.html">Tutorial: Six‑Objective Toy Optimization</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tutorial: Calibrating a Wflow Hydrological Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#goal">Goal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#folder-structure-example">Folder structure (example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wrapper-contract-recap">Wrapper contract (recap)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-wrapper-outline">Example wrapper outline</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#variables-and-objectives">Variables and objectives</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#appendix-a-full-variable-list">Appendix A (full variable list)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#json-configuration">JSON configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-calibration">Running the calibration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#nsgaii-baseline">NSGA‑II baseline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nsgaiii-alternative-3-objectives">NSGA‑III alternative (3 objectives)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-wrapper-controls">Optional wrapper controls</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#outputs-analysis">Outputs &amp; analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#appendix-b-expected-metrics-format">Appendix B (expected metrics format)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#suggested-citation">Suggested citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Optiverse Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Tutorial: Calibrating a Wflow Hydrological Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial_wflow.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-calibrating-a-wflow-hydrological-model">
+<span id="tutorial-wflow"></span><h1>Tutorial: Calibrating a Wflow Hydrological Model<a class="headerlink" href="#tutorial-calibrating-a-wflow-hydrological-model" title="Link to this heading"></a></h1>
+<section id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Link to this heading"></a></h2>
+<p>This tutorial shows how to calibrate a Wflow‑based hydrological model using
+OptiVerse. We treat calibration as a <strong>three‑objective</strong> optimization problem:</p>
+<ul class="simple">
+<li><p><strong>KGEp</strong> — maximize</p></li>
+<li><p><strong>logNSE</strong> — maximize</p></li>
+<li><p><strong>bias_score</strong> — maximize</p></li>
+</ul>
+<p>We will:</p>
+<ol class="arabic simple">
+<li><p>Prepare the <strong>wrapper</strong> that runs Wflow and computes metrics.</p></li>
+<li><p>Provide <strong>variables</strong> and <strong>objectives</strong> via CSV.</p></li>
+<li><p>Run <strong>search</strong> (NSGA‑II and NSGA‑III options).</p></li>
+<li><p>Extract the <strong>global front</strong> and compute <strong>normalized HV</strong>.</p></li>
+</ol>
+</section>
+<section id="folder-structure-example">
+<h2>Folder structure (example)<a class="headerlink" href="#folder-structure-example" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>your_project/
+├─ wflow_gilgel_abay/                # model directory (inputs, scripts, batch)
+│  ├─ wrapper_wflow.py               # your wrapper
+│  ├─ Wflow-julia.bat                # starts the Wflow/Julia simulation
+│  ├─ compute_metrics.py             # computes KGEp/logNSE/bias_score → metrics.txt
+│  ├─ robust_update_staticmaps.py    # any preprocessing needed by the model
+│  ├─ observed_streamflow.csv
+│  └─ ... (Wflow assets)
+├─ variable_declaration.csv
+├─ objective_declaration.csv
+└─ run_search.json
+</pre></div>
+</div>
+</section>
+<section id="wrapper-contract-recap">
+<h2>Wrapper contract (recap)<a class="headerlink" href="#wrapper-contract-recap" title="Link to this heading"></a></h2>
+<p>OptiVerse writes <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> inside a <strong>working copy</strong> of your
+model directory. Your wrapper must:</p>
+<ol class="arabic simple">
+<li><p>Read <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> and apply parameters to the model inputs.</p></li>
+<li><p>Run the simulation (e.g., by calling the provided batch or Julia script).</p></li>
+<li><p>Compute metrics and write <code class="docutils literal notranslate"><span class="pre">metrics.txt</span></code> (or directly write objectives).</p></li>
+<li><p>Produce <code class="docutils literal notranslate"><span class="pre">objective_values.csv</span></code> with two columns: <code class="docutils literal notranslate"><span class="pre">Name,Value</span></code>.</p></li>
+</ol>
+<section id="example-wrapper-outline">
+<h3>Example wrapper outline<a class="headerlink" href="#example-wrapper-outline" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">wflow_gilgel_abay/wrapper_wflow.py</span></code> (outline only)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">csv</span><span class="o">,</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="k">def</span> <span class="nf">create_tbl_files</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Map variable_values.csv → per-parameter .tbl files for Wflow inputs</span>
+    <span class="c1"># Make sure outputs go INSIDE model_folder (no global temp paths).</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">update_static_maps</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Call robust_update_staticmaps with --staticmap, --param_dir, --backup</span>
+    <span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">run_wflow</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># IMPORTANT: run in the working directory; avoid shell=True</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># If using Julia, avoid global depot contention (optional but recommended):</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;JULIA_PROJECT&quot;</span><span class="p">,</span> <span class="n">model_folder</span><span class="p">)</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;JULIA_DEPOT_PATH&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;.julia_depot&quot;</span><span class="p">))</span>
+
+    <span class="n">exe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;Wflow-julia.bat&quot;</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">exe</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">model_folder</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">calculate_metrics</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># e.g., compute_metrics.py writes metrics.txt with three comma-separated values</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="kn">import</span> <span class="nn">compute_metrics</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;--sim&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;run_default/output.csv&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;--obs&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;observed_streamflow.csv&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;--out_dir&quot;</span><span class="p">,</span> <span class="n">model_folder</span><span class="p">]</span>
+    <span class="n">compute_metrics</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">prepare_objectives</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;metrics.txt&quot;</span><span class="p">)</span>
+    <span class="n">outp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_folder</span><span class="p">,</span> <span class="s2">&quot;objective_values.csv&quot;</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;KGEp&quot;</span><span class="p">,</span> <span class="s2">&quot;logNSE&quot;</span><span class="p">,</span> <span class="s2">&quot;bias_score&quot;</span><span class="p">]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Expected 3 metrics in metrics.txt&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outp</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">search_and_apply_variables</span><span class="p">(</span><span class="n">model_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">create_tbl_files</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span>
+    <span class="n">update_static_maps</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span>
+    <span class="n">run_wflow</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span>
+    <span class="n">calculate_metrics</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span>
+    <span class="n">prepare_objectives</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="variables-and-objectives">
+<h2>Variables and objectives<a class="headerlink" href="#variables-and-objectives" title="Link to this heading"></a></h2>
+<p><strong>Objectives</strong> (three <em>maximize</em>) → <code class="docutils literal notranslate"><span class="pre">objective_declaration.csv</span></code></p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>Name,Objective
+KGEp,maximize
+logNSE,maximize
+bias_score,maximize
+</pre></div>
+</div>
+<p><strong>Variables</strong> → <code class="docutils literal notranslate"><span class="pre">variable_declaration.csv</span></code></p>
+<p>Paste the full list provided for your catchment. The header must be
+<code class="docutils literal notranslate"><span class="pre">Name,Upper_bound,Lower_bound</span></code>. Below is a compact example showing the pattern;
+see the appendix for the full list (as supplied).</p>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>Name,Upper_bound,Lower_bound
+thetaS.1,0.01,0.7
+thetaS.2,0.01,0.7
+...
+N_River.1,0.04,0.5
+N_River.2,0.04,0.5
+...
+SoilThickness.1,2000,8950
+...
+KsatVer.1,500,10000
+...
+RootingDepth.1,100,5000
+...
+KsatHorFrac.1,800,1000
+...
+InfiltCapSoil.1,100,400
+...
+</pre></div>
+</div>
+<section id="appendix-a-full-variable-list">
+<h3>Appendix A (full variable list)<a class="headerlink" href="#appendix-a-full-variable-list" title="Link to this heading"></a></h3>
+<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>Name,Upper_bound,Lower_bound
+thetaS.1,0.01,0.7
+thetaS.2,0.01,0.7
+thetaS.3,0.01,0.7
+thetaS.4,0.01,0.7
+thetaS.5,0.01,0.7
+thetaS.6,0.01,0.7
+thetaS.7,0.01,0.7
+thetaS.8,0.01,0.7
+thetaS.9,0.01,0.7
+thetaS.10,0.01,0.7
+thetaS.11,0.01,0.7
+thetaS.12,0.01,0.7
+thetaS.13,0.01,0.7
+N_River.1,0.04,0.5
+N_River.2,0.04,0.5
+N_River.3,0.04,0.5
+N_River.4,0.04,0.5
+N_River.5,0.04,0.5
+N_River.6,0.04,0.5
+N_River.7,0.04,0.5
+N_River.8,0.04,0.5
+N_River.9,0.04,0.5
+N_River.10,0.04,0.5
+N_River.11,0.04,0.5
+N_River.12,0.04,0.5
+N_River.13,0.04,0.5
+SoilThickness.1,2000,8950
+SoilThickness.2,2000,8950
+SoilThickness.3,2000,8950
+SoilThickness.4,2000,8950
+SoilThickness.5,2000,8950
+SoilThickness.6,2000,8950
+SoilThickness.7,2000,8950
+SoilThickness.8,2000,8950
+SoilThickness.9,2000,8950
+SoilThickness.10,2000,8950
+SoilThickness.11,2000,8950
+SoilThickness.12,2000,8950
+SoilThickness.13,2000,8950
+KsatVer.1,500,10000
+KsatVer.2,500,10000
+KsatVer.3,500,10000
+KsatVer.4,500,10000
+KsatVer.5,500,10000
+KsatVer.6,500,10000
+KsatVer.7,500,10000
+KsatVer.8,500,10000
+KsatVer.9,500,10000
+KsatVer.10,500,10000
+KsatVer.11,500,10000
+KsatVer.12,500,10000
+KsatVer.13,500,10000
+RootingDepth.1,100,5000
+RootingDepth.2,100,5000
+RootingDepth.3,100,5000
+RootingDepth.4,100,5000
+RootingDepth.5,100,5000
+RootingDepth.6,100,5000
+RootingDepth.7,100,5000
+RootingDepth.8,100,5000
+RootingDepth.9,100,5000
+RootingDepth.10,100,5000
+RootingDepth.11,100,5000
+RootingDepth.12,100,5000
+RootingDepth.13,100,5000
+KsatHorFrac.1,800,1000
+KsatHorFrac.2,800,1000
+KsatHorFrac.3,800,1000
+KsatHorFrac.4,800,1000
+KsatHorFrac.5,800,1000
+KsatHorFrac.6,800,1000
+KsatHorFrac.7,800,1000
+KsatHorFrac.8,800,1000
+KsatHorFrac.9,800,1000
+KsatHorFrac.10,800,1000
+KsatHorFrac.11,800,1000
+KsatHorFrac.12,800,1000
+KsatHorFrac.13,800,1000
+InfiltCapSoil.1,100,400
+InfiltCapSoil.2,100,400
+InfiltCapSoil.3,100,400
+InfiltCapSoil.4,100,400
+InfiltCapSoil.5,100,400
+InfiltCapSoil.6,100,400
+InfiltCapSoil.7,100,400
+InfiltCapSoil.8,100,400
+InfiltCapSoil.9,100,400
+InfiltCapSoil.10,100,400
+InfiltCapSoil.11,100,400
+InfiltCapSoil.12,100,400
+</pre></div>
+</div>
+</section>
+</section>
+<section id="json-configuration">
+<h2>JSON configuration<a class="headerlink" href="#json-configuration" title="Link to this heading"></a></h2>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">run_search.json</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;model_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./wflow_gilgel_abay&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;wrapper_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wrapper_wflow.py&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;variables_csv&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./variable_declaration.csv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;objectives_csv&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./objective_declaration.csv&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;algorithm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;population_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;generations&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can start modestly with 60×40 to verify throughput, then scale.</p>
+</section>
+<section id="running-the-calibration">
+<h2>Running the calibration<a class="headerlink" href="#running-the-calibration" title="Link to this heading"></a></h2>
+<section id="nsgaii-baseline">
+<h3>NSGA‑II baseline<a class="headerlink" href="#nsgaii-baseline" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
+</pre></div>
+</div>
+</section>
+<section id="nsgaiii-alternative-3-objectives">
+<h3>NSGA‑III alternative (3 objectives)<a class="headerlink" href="#nsgaiii-alternative-3-objectives" title="Link to this heading"></a></h3>
+<p>With 3 objectives you can also use NSGA‑III with reference directions. Two
+convenient choices are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--ref-parts</span> <span class="pre">8</span></code> → 45 directions (match population ≈ 45)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--ref-parts</span> <span class="pre">12</span></code> → 91 directions (match population ≈ 91)</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example with p=12 (91 directions)</span>
+jq<span class="w"> </span><span class="s1">&#39;.algorithm.population_size=91&#39;</span><span class="w"> </span>run_search.json<span class="w"> </span>&gt;<span class="w"> </span>run_search_nsga3.json
+
+optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search_nsga3.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--algo<span class="w"> </span>nsga3<span class="w"> </span>--ref-parts<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
+</pre></div>
+</div>
+<p>(You may keep your population at 60 and still run NSGA‑III; matching the number
+of reference directions generally improves spread.)</p>
+</section>
+<section id="optional-wrapper-controls">
+<h3>Optional wrapper controls<a class="headerlink" href="#optional-wrapper-controls" title="Link to this heading"></a></h3>
+<p>If your metrics script supports warm‑up/epsilon factors, you can pass them as
+environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WRAPPER_WARMUP_YEARS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">WRAPPER_EPS_FACTOR</span><span class="o">=</span><span class="m">0</span>.25<span class="w"> </span><span class="se">\</span>
+optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="outputs-analysis">
+<h2>Outputs &amp; analysis<a class="headerlink" href="#outputs-analysis" title="Link to this heading"></a></h2>
+<ul>
+<li><p><strong>History</strong>: <code class="docutils literal notranslate"><span class="pre">results/history_seed{SEED}.csv</span></code> — all generations in one file</p></li>
+<li><p><strong>Global front</strong> (optionally ε‑thinned):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>front<span class="w"> </span>--epsilon<span class="w"> </span><span class="m">0</span>.01
+<span class="c1"># → results/pareto_front_all.csv</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Normalized HV</strong> (wide format by seed):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>hypervolume
+<span class="c1"># → results/hypervolume.csv</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<ul>
+<li><p><strong>Parallelism stalls or runs one at a time</strong>
+- Ensure the wrapper runs the batch/script with <code class="docutils literal notranslate"><span class="pre">cwd=model_folder</span></code> and</p>
+<blockquote>
+<div><p>avoid <code class="docutils literal notranslate"><span class="pre">shell=True</span></code> unless necessary.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If using Julia, set a <strong>local</strong> depot via
+<code class="docutils literal notranslate"><span class="pre">JULIA_PROJECT</span></code> and <code class="docutils literal notranslate"><span class="pre">JULIA_DEPOT_PATH</span></code> in the wrapper to avoid global
+cache contention when multiple workers start simultaneously.</p></li>
+</ul>
+</li>
+<li><p><strong>No objectives written</strong>
+- Confirm the wrapper ends by writing a valid <code class="docutils literal notranslate"><span class="pre">objective_values.csv</span></code> with</p>
+<blockquote>
+<div><p>the exact headers <code class="docutils literal notranslate"><span class="pre">Name,Value</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Mixed population sizes in one history</strong>
+- Make sure you are not mixing results from different experiments into the</p>
+<blockquote>
+<div><p>same <code class="docutils literal notranslate"><span class="pre">results/</span></code> folder with the same <code class="docutils literal notranslate"><span class="pre">--seed</span></code>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Keep population size consistent within a single experiment; if you resume
+with checkpoints, the population is dictated by the checkpoint.</p></li>
+</ul>
+</li>
+<li><p><strong>Checkpoint/resume for long jobs</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>search<span class="w"> </span>...<span class="w"> </span>--checkpoint-every<span class="w"> </span><span class="m">1</span><span class="w"> </span>--resume-latest
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="appendix-b-expected-metrics-format">
+<h2>Appendix B (expected metrics format)<a class="headerlink" href="#appendix-b-expected-metrics-format" title="Link to this heading"></a></h2>
+<p>If your metrics script writes <code class="docutils literal notranslate"><span class="pre">metrics.txt</span></code>, it must contain <strong>one line</strong> with
+three comma‑separated values in the following order:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>KGEp,logNSE,bias_score
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.76,0.81,0.04
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial_toy6.html" class="btn btn-neutral float-left" title="Tutorial: Six‑Objective Toy Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Mohammed Basheer.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

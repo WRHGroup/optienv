@@ -1,6 +1,25 @@
 Citation
 ========
 
-Please cite the following paper when using OptiVerse:
+If OptiVerse helps your research or engineering work, please cite or acknowledge it.
 
-    TBA
+Suggested citation
+==================
+
+.. code-block:: text
+
+   TBA
+
+Cite the underlying algorithms you use in your experiments:
+
+- K. Deb, A. Pratap, S. Agarwal, T. Meyarivan (2002).
+  "A Fast and Elitist Multiobjective Genetic Algorithm: NSGA‑II."
+- K. Deb, H. Jain (2014).
+  "An Evolutionary Many‑Objective Optimization Algorithm Using
+  Reference‑Point‑Based Nondominated Sorting Approach" (NSGA‑III).
+
+Acknowledgements
+================
+
+- Contributors and testers who provided feedback and example models.
+- The open‑source community for tools and libraries that make this project possible.

@@ -1,0 +1,131 @@
+.. _modules:
+
+=====================================
+Modules and Architecture (Key Parts)
+=====================================
+
+This page gives a curated overview of OptiVerse internals to help you
+extend and maintain the codebase.
+
+.. contents::
+   :local:
+   :depth: 2
+
+
+High‑level architecture
+=======================
+
+.. code-block:: text
+
+   +------------------------------+
+   |        CLI (Typer)           |
+   |  search | front | hv | ver   |
+   +------------------------------+
+                |
+                v
+   +------------------------------+        +----------------------------+
+   |   Algorithms (ask / tell)    |<------>|    utils.pareto            |
+   |   NSGA2 | NSGA3              |        |   - nondominated_mask      |
+   +------------------------------+        |   - epsilon_archive        |
+                |                          +----------------------------+
+                v
+   +------------------------------+
+   |   Evaluation Pipeline        |
+   |   - CSV adapter              |
+   |   - Lean workers (subprocs)  |
+   +------------------------------+
+
+Core packages
+=============
+
+``optiverse.cli.app`` (CLI entry points)
+---------------------------------------
+
+- Implements the commands documented in :ref:`cli`.
+- Spawns a pool of workers (processes or threads) to evaluate candidates.
+- Writes the single‑file per‑seed **history** and optional CSVs.
+- Manages **checkpoint** save/load and **resume** semantics.
+- For analysis:
+  - ``front`` computes the global non‑dominated set (optionally ε‑thinned).
+  - ``hypervolume`` computes normalized HV (wide format).
+
+``optiverse.core.adapters.csv_wrapper`` (CSV model adapter)
+-----------------------------------------------------------
+
+**Wrapper contract**
+
+- OptiVerse writes ``variable_values.csv`` in a **working copy** of your model.
+- Your wrapper must define:
+
+  .. code-block:: python
+
+     def search_and_apply_variables(model_folder: str) -> None:
+         ...
+
+- Your wrapper must write ``objective_values.csv`` with two columns: ``Name,Value``.
+- The adapter flips sign for objectives declared as *maximize* to ensure a pure
+  minimization view inside the algorithms.
+
+**Working copies & cleanup**
+
+- Each evaluation runs in a **fresh working copy**, then the directory is
+  deleted (unless ``--keep-work-on-error``).
+- The adapter uses robust deletion with retries (Windows‑friendly).
+
+``optiverse.algos.nsga2`` (NSGA‑II)
+-----------------------------------
+
+- ``NSGA2(population_size, seed=None)`` exposes ``initialize(n_var, bounds)`` and
+  the GA loop via ``ask(pop, fit, bounds)`` → ``tell(pop, fit, children, fit_children)``.
+- **Survival**:
+  - Combine parents and offspring → fast non‑dominated sort
+  - Fill full fronts; on the splitting front, keep the **largest crowding distance** points
+- **Variation**: SBX crossover (+ polynomial mutation)
+- Recommended when M ≤ 3 or as a strong baseline for most problems.
+
+.. _modules-nsga2:
+
+Implementation notes:
+
+- Ensure the splitting front is **truncated** (never exceed ``population_size``).
+- Keep an invariant check during development:
+
+  .. code-block:: python
+
+     assert survivors.shape[0] == population_size
+
+``optiverse.algos.nsga3`` (NSGA‑III)
+------------------------------------
+
+- Many‑objective extension of NSGA‑II, replacing crowding with **reference‑direction niching**.
+- **Reference directions**
+  - Generated via Das–Dennis (``--ref-parts``) or loaded from CSV (``--ref-dirs-csv``)
+- **Survival**
+  - Combine parents & offspring → non‑dominated sort
+  - Truncate the splitting front with **niching**:
+    fill under‑represented directions first, choose the smallest perpendicular distance
+- Works well when M ≥ 4.
+
+.. _modules-nsga3:
+
+Implementation notes:
+
+- The niching selector must return **at most** ``k`` indices when truncating.
+- Normalize objective values before association (min‑max normalization suffices
+  in practice for robustness).
+
+``optiverse.utils.pareto``
+--------------------------
+
+- ``nondominated_mask(F)``: boolean mask of non‑dominated rows for a minimization array
+- ``epsilon_archive(F, eps)``: ε‑box thinning (useful for density control in fronts/HV)
+- Used by both CLI analysis commands and, optionally, in algorithm prototypes.
+
+Checkpoints & resume
+--------------------
+
+- Checkpoints are single‑file ``.npz`` with:
+  population, fitness, RNG state, variable/objective names, bounds,
+  history path, model_dir, and last generation index.
+- On **resume**, RNG state and arrays are restored and evaluation continues
+  seamlessly from the saved generation.
