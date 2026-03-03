@@ -142,13 +142,6 @@ def main():
             write_bad(args.out_dir); return
         o, s = o[:n], s[:n]
 
-        # Warm-up trim (years-only)
-        trim = 365 * int(args.warmup_years)
-        if trim > 0:
-            if len(o) <= trim or len(s) <= trim:
-                sys.stderr.write(f"[compute_metrics] Warm-up exceeds length for {oc}->{sc}.\n")
-                write_bad(args.out_dir); return
-            o = o[trim:]; s = s[trim:]
 
         # Per-station metrics
         KGEp = kge_prime_2012(o, s)

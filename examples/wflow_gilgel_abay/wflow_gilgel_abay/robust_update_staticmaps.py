@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Robust Staticmaps Updater for Wflow.jl SBM (OSTRICH + ParaPADDS)
+Robust Staticmaps Updater for Wflow.jl SBM (optiverse-MOEA-NSGAII)
 
 Features:
 - Updates only target_vars: ["thetaS","InfiltCapSoil","SoilThickness","KsatVer","KsatHorFrac"]
 - Never modifies wflow_ldd during parameter updates.
 - Hardens wflow_ldd at the end: NaNs -> nodata, clamp codes to 0..9, cast to int32.
 - Preserves dataset structure and metadata.
-- Validates/clips to ostInt ranges; enforces thetaS > thetaR (without changing thetaR).
+- Validates/clips to decision Variable ranges; enforces thetaS > thetaR (without changing thetaR).
 - Atomic write with compression; optional backup and JSON summary.
 """
 
@@ -49,11 +49,11 @@ def read_tbl(path: str, pname: str) -> pd.DataFrame:
         raise RuntimeError(f"No valid rows in {path}")
     first = [r[0] for r in rows]
     last = [r[-1] for r in rows]
-    df = pd.DataFrame({"ostrich_id": first, pname: last})
-    df["ostrich_id"] = pd.to_numeric(df["ostrich_id"], errors="coerce")
-    if df["ostrich_id"].isna().any():
-        raise RuntimeError(f"Invalid ostrich_id values in {path}")
-    df["ostrich_id"] = df["ostrich_id"].astype(int)
+    df = pd.DataFrame({"landuse_id": first, pname: last})
+    df["landuse_id"] = pd.to_numeric(df["landuse_id"], errors="coerce")
+    if df["landuse_id"].isna().any():
+        raise RuntimeError(f"Invalid landuse_id values in {path}")
+    df["landuse_id"] = df["landuse_id"].astype(int)
     df[pname] = pd.to_numeric(df[pname], errors="coerce")
     if df[pname].isna().any():
         raise RuntimeError(f"Invalid numeric values for {pname} in {path}")
@@ -133,7 +133,7 @@ def harden_ldd_da(ldd_da: xr.DataArray, nodata: int = -9999) -> xr.DataArray:
 # Main
 # -------------------------
 def main():
-    ap = argparse.ArgumentParser(description="Robust Staticmaps Updater for Wflow.jl SBM (OSTRICH + ParaPADDS)")
+    ap = argparse.ArgumentParser(description="Robust Staticmaps Updater for Wflow.jl SBM (MOEA-NSGAII)")
     ap.add_argument("--staticmap", required=True, help="Path to staticmaps.nc")
     ap.add_argument("--param_dir", required=True, help="Directory with .tbl parameter files")
     ap.add_argument("--landuse_var", default="wflow_landuse", help="Landuse variable name in staticmaps.nc")
@@ -214,7 +214,7 @@ def main():
         ds_unit = ds[var].attrs.get("units") if var in ds else None
         src_unit = src_units.get(var)
         for _, row in df.iterrows():
-            oid  = int(row["ostrich_id"])
+            oid  = int(row["landuse_id"])
             val_src = float(row[var])
             wflow_id = mapping.get(oid, None)
             if wflow_id is None:
