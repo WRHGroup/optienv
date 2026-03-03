@@ -1,0 +1,6 @@
+Citation
+========
+
+Please cite the following paper when using OptiVerse:
+
+    TBA
