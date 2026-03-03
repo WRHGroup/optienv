@@ -185,25 +185,54 @@ class NSGA3:
         return np.vstack(children)[:n]
 
     def tell(self, pop: np.ndarray, fit: np.ndarray,
-             new_pop: np.ndarray, new_fit: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+            new_pop: np.ndarray, new_fit: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         # Elitist survival from R = parents ∪ offspring (2N)
         P = np.vstack([pop, new_pop])
         F = np.vstack([fit, new_fit])
 
-        fronts = _fast_non_dominated_sort(F)
-        next_idx: List[int] = []
+        fronts = _fast_non_dominated_sort(F)  # list of np.ndarray indices
+        next_idx: list[int] = []
+
         for fr in fronts:
+            fr = np.asarray(fr, dtype=int)
+            # If the entire front fits, take it whole.
             if len(next_idx) + len(fr) <= self.n:
                 next_idx.extend(fr.tolist())
-            else:
-                # NSGA-III niching on the splitting front
-                needed = self.n - len(next_idx)
-                chosen = self._niching_select(F, fronts, next_idx, fr, needed)
-                next_idx.extend(chosen.tolist())
-                break
+                if len(next_idx) == self.n:
+                    break
+                continue
 
-        next_idx = np.array(next_idx, dtype=int)
+            # Otherwise, we are on the splitting front and must truncate via NSGA-III niching.
+            needed = self.n - len(next_idx)
+            if needed <= 0:
+                break  # already full; nothing more to add
+
+            chosen = self._niching_select(F, fronts, next_idx, fr, needed)
+            chosen = np.asarray(chosen, dtype=int)
+
+            # Defensive cap in case the helper returned too many.
+            if chosen.size > needed:
+                chosen = chosen[:needed]
+
+            next_idx.extend(chosen.tolist())
+            break  # population is now full (or as full as possible)
+
+        next_idx = np.asarray(next_idx, dtype=int)
+
+        # Optional but highly recommended during development:
+        # Fail fast if we ever overflow or underfill.
+        assert next_idx.size <= self.n, f"NSGA-III survivors overflow: {next_idx.size} > {self.n}"
+        if next_idx.size < self.n:
+            # If you want to be strict, raise; otherwise you can top-up deterministically.
+            # For production stability, raise so bugs get fixed instead of masked:
+            raise RuntimeError(f"NSGA-III survivors underfilled: {next_idx.size} < {self.n}")
+
+        # Keep exactly N survivors.
+        next_idx = next_idx[: self.n]
+
+        # Store ranks for mating selection
         self._rank = self._rank_from_fronts(fronts, F.shape[0])
+
         return P[next_idx], F[next_idx]
 
     # ---------- helpers ----------

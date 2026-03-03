@@ -21,8 +21,8 @@
   - [Run Configuration JSON](#run-configuration-json)
   - [Single‑File History](#singlefile-history)
 - [CLI Usage](#cli-usage)
-  - [`run-sim` (NSGA‑II / NSGA‑III)](#run-sim-nsga-ii--nsga-iii)
-  - [`pareto-front`](#pareto-front)
+  - [`search` (NSGA‑II / NSGA‑III)](#search-nsga-ii--nsga-iii)
+  - [`front`](#front)
   - [`hypervolume` (normalized, wide output)](#hypervolume-normalized-wide-output)
 - [NSGA‑III Reference Directions](#nsgaiii-reference-directions)
 - [Resume / Checkpointing](#resume--checkpointing)
@@ -51,7 +51,7 @@
   - **One** history CSV per seed (`results/history_seed{SEED}.csv`) containing all generations.
   - Optional final CSVs: population, fitness, and non‑dominated mask.
 - **Analysis**
-  - `pareto-front`: global non‑dominated set across all seeds + `seed` provenance column, optional ε‑box thinning.
+  - `front`: global non‑dominated set across all seeds + `seed` provenance column, optional ε‑box thinning.
   - `hypervolume`: **normalized** to [0,1] across all histories; **no ref point needed**; **wide** output (one HV column per seed).
 - **Robustness for Windows/Clusters**
   - Lean worker processes (no heavy imports) and aggressive cleanup of temp folders (read‑only clearing, retries, background reaper, `atexit`).
@@ -161,11 +161,11 @@ generation,index,<objective_1>,...,<objective_M>,<x1>,...,<xN>,nd
 
 ## CLI Usage
 
-### `run-sim` (NSGA‑II / NSGA‑III)
+### `search` (NSGA‑II / NSGA‑III)
 
 Run NSGA‑II:
 ```bash
-optiverse run-sim \
+optiverse search \
   -c path/to/run_sim.json \
   --algo nsga2 \
   -j 4 --seed 7 \
@@ -175,7 +175,7 @@ optiverse run-sim \
 
 Run NSGA‑III with reference directions:
 ```bash
-optiverse run-sim \
+optiverse search \
   -c path/to/run_sim.json \
   --algo nsga3 --ref-parts 4 \
   -j 4 --seed 7 \
@@ -203,12 +203,12 @@ optiverse run-sim \
 
 ---
 
-### `pareto-front`
+### `front`
 
 Compute a **global** non‑dominated set across **all** `results/history*.csv`:
 
 ```bash
-optiverse pareto-front
+optiverse front
 # → results/pareto_front_all.csv
 ```
 
@@ -255,17 +255,17 @@ NSGA‑III uses **reference‑direction niching** (instead of crowding distance)
 Enable checkpoints during a run:
 
 ```bash
-optiverse run-sim ... --checkpoint-every 1 --checkpoint-path results/checkpoint.npz
+optiverse search ... --checkpoint-every 1 --checkpoint-path results/checkpoint.npz
 ```
 
 Resume later:
 
 ```bash
 # Resume from default checkpoint
-optiverse run-sim ... --resume-latest
+optiverse search ... --resume-latest
 
 # Or resume from a specific path
-optiverse run-sim ... --resume-from path/to/checkpoint.npz
+optiverse search ... --resume-from path/to/checkpoint.npz
 ```
 
 Checkpoints store generation index, population, fitness, RNG state, variable/objective names, bounds, history path, and model_dir—so resuming is safe and consistent.
@@ -277,10 +277,10 @@ Checkpoints store generation index, population, fitness, RNG state, variable/obj
 During evaluation you’ll see:
 
 ```
-[run-sim] Gen 5/50 – evaluating 126 candidates (workers=8, backend=process)...
+[search] Gen 5/50 – evaluating 126 candidates (workers=8, backend=process)...
   completed:  63/126 ( 50%)  elapsed: 00:01:12
   completed: 126/126 (100%)  elapsed: 00:02:21
-[run-sim] Gen 5 done in 00:02:21
+[search] Gen 5 done in 00:02:21
 ```
 
 - `--backend process` (default) leverages multiple CPUs safely for external simulators.
@@ -307,15 +307,15 @@ Run:
 cd examples/toy_3obj
 
 # NSGA‑II
-optiverse run-sim -c run_sim_example.json \
+optiverse search -c run_sim_example.json \
   --algo nsga2 -j 2 --seed 7 --label-columns --no-save-final-csvs
 
 # NSGA‑III
-optiverse run-sim -c run_sim_example.json \
+optiverse search -c run_sim_example.json \
   --algo nsga3 --ref-parts 8 -j 2 --seed 7 --label-columns --no-save-final-csvs
 
 # Global front and HV
-optiverse pareto-front --epsilon 0.02
+optiverse front --epsilon 0.02
 optiverse hypervolume
 ```
 
@@ -337,14 +337,14 @@ For **M=6**, `--ref-parts 4` ⇒ 126 reference directions; match pop≈126 for N
 cd examples/toy_6obj
 
 # NSGA‑II baseline
-optiverse run-sim -c run_sim_example.json \
+optiverse search -c run_sim_example.json \
   --algo nsga2 -j 4 --seed 7 --label-columns --no-save-final-csvs
 
 # NSGA‑III with matched pop size (edit JSON or override before running)
 # Example using jq to set population to 126:
 jq '.algorithm.population_size=126' run_sim_example.json > run_sim_example_126.json
 
-optiverse run-sim -c run_sim_example_126.json \
+optiverse search -c run_sim_example_126.json \
   --algo nsga3 --ref-parts 4 -j 4 --seed 7 --label-columns --no-save-final-csvs
 
 # Compare HV across seeds/generations

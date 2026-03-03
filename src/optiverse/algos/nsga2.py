@@ -69,16 +69,36 @@ class NSGA2:
             off.append(c1); off.append(c2)
         return np.asarray(off[:self.n])
 
-    def tell(self, pop: np.ndarray, fit: np.ndarray, new_pop: np.ndarray, new_fit: np.ndarray):
-        P = np.vstack([pop, new_pop]); F = np.vstack([fit, new_fit])
-        fronts = _fast_nd_sort(F)
+    def tell(self, pop: np.ndarray, fit: np.ndarray,
+            new_pop: np.ndarray, new_fit: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        # Combine parents and offspring
+        P = np.vstack([pop, new_pop])
+        F = np.vstack([fit, new_fit])
+
+        fronts = _fast_nd_sort(F)   # list of index arrays, e.g., [F1, F2, ...]
         nxtp, nxtf = [], []
-        for f in fronts:
-            if len(nxtp) + len(f) <= self.n:
-                nxtp.append(P[f]); nxtf.append(F[f])
+        taken = 0                   # <-- number of survivors already selected
+
+        for fr in fronts:
+            fr_size = len(fr)
+            if taken + fr_size <= self.n:
+                nxtp.append(P[fr])
+                nxtf.append(F[fr])
+                taken += fr_size
             else:
-                k = self.n - len(nxtp)
-                crowd = _crowding_distance(F[f])
-                idx = f[np.argsort(-crowd)[:k]]
-                nxtp.append(P[idx]); nxtf.append(F[idx]); break
-        return np.vstack(nxtp), np.vstack(nxtf)
+                k = self.n - taken                  # how many more we can take
+                if k > 0:
+                    crowd = _crowding_distance(F[fr])        # crowding aligned to fr
+                    keep_local = np.argsort(-crowd)[:k]      # top-k by crowding
+                    keep_idx = fr[keep_local]                # map back to global idx
+                    nxtp.append(P[keep_idx])
+                    nxtf.append(F[keep_idx])
+                    taken += k
+                break
+
+        # Stack and (optionally) assert the invariant
+        Pn = np.vstack(nxtp)
+        Fn = np.vstack(nxtf)
+        # Optionally enforce:
+        # assert Pn.shape[0] == self.n, f"Survivors={Pn.shape[0]} but pop_size={self.n}"
+        return Pn, Fn
