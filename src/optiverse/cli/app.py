@@ -219,11 +219,11 @@ def _load_checkpoint(path: Path) -> Dict[str, Any]:
     }
 
 # ======================================================================================
-# run-sim with NSGA-II / NSGA-III, resume/checkpoint, progress, lean workers
+# search with NSGA-II / NSGA-III, resume/checkpoint, progress, lean workers
 # ======================================================================================
 
-@app.command("run-sim")
-def run_sim(
+@app.command("search")
+def search(
     config: Path = typer.Option(..., "--config", "-c", help="Path to JSON config"),
     output: Path = typer.Option("results/", "--output", "-o", help="Output directory"),
     seed: Optional[int] = typer.Option(None, "--seed", help="RNG seed (overrides JSON; suffixes outputs)"),
@@ -351,7 +351,7 @@ def run_sim(
             ref_dirs = _das_dennis_local(n_obj, int(ref_parts))
 
         if pop_size != len(ref_dirs):
-            typer.echo(f"[run-sim] NSGA-III: population_size={pop_size}, reference_dirs={len(ref_dirs)}; "
+            typer.echo(f"[search] NSGA-III: population_size={pop_size}, reference_dirs={len(ref_dirs)}; "
                        f"it is common to set them equal for a 1:1 niche match. Proceeding anyway. "
                        f"(Refs: Deb & Jain 2014; DEAP/pymoo examples)")  # [1](https://ieeexplore.ieee.org/document/6600851)[6](https://deap.readthedocs.io/en/master/examples/nsga3.html)[2](https://pymoo.org/algorithms/moo/nsga3.html)
 
@@ -378,7 +378,7 @@ def run_sim(
     def eval_population(X: np.ndarray, *, gen: int, total_gens: int, phase: str = "Gen") -> np.ndarray:
         n = len(X)
         if progress:
-            typer.echo(f"[run-sim] {phase} {gen}/{total_gens} – evaluating {n} candidates (workers={max_workers}, backend={backend})...")
+            typer.echo(f"[search] {phase} {gen}/{total_gens} – evaluating {n} candidates (workers={max_workers}, backend={backend})...")
             start = time.time()
 
         if max_workers == 1:
@@ -412,7 +412,7 @@ def run_sim(
             F = np.vstack(results)
 
         if progress:
-            typer.echo(f"[run-sim] {phase} {gen} done in {_format_hms(time.time() - start)}")
+            typer.echo(f"[search] {phase} {gen} done in {_format_hms(time.time() - start)}")
         return F
 
     # -------------------- Resume or fresh start --------------------
@@ -424,7 +424,7 @@ def run_sim(
             raise typer.BadParameter(f"Checkpoint not found at: {path}")
         ckpt = _load_checkpoint(path)
         if seed is not None and ckpt["seed"] is not None and seed != ckpt["seed"]:
-            typer.echo(f"[run-sim] WARNING: overriding checkpoint seed ({ckpt['seed']}) with --seed {seed}")
+            typer.echo(f"[search] WARNING: overriding checkpoint seed ({ckpt['seed']}) with --seed {seed}")
         if list(ckpt["var_names"]) != var_names:
             raise typer.BadParameter("Checkpoint variable names do not match current configuration.")
         if list(ckpt["obj_names"]) != obj_names:
@@ -436,7 +436,7 @@ def run_sim(
         pop = ckpt["pop"]
         fit = ckpt["fit"]
         start_gen = int(ckpt["gen"])
-        typer.echo(f"[run-sim] Resuming from generation {start_gen}, checkpoint: {path}")
+        typer.echo(f"[search] Resuming from generation {start_gen}, checkpoint: {path}")
         if not history_path.exists():
             with history_path.open("w", newline="") as f:
                 w = _csv.writer(f)
@@ -543,8 +543,8 @@ def run_sim(
 # pareto-front (seed provenance + --epsilon)
 # ======================================================================================
 
-@app.command("pareto-front")
-def pareto_front(
+@app.command("front")
+def front(
     epsilon: Optional[float] = typer.Option(
         None, "--epsilon", min=0.0, help="ε-box thinning of the final Pareto front (optional)"
     ),

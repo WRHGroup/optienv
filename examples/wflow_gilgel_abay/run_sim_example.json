@@ -8,6 +8,6 @@
   },
   "algorithm": {
     "population_size": 4,
-    "generations": 4
+    "generations": 20
   }
 }
