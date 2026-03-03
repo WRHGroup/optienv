@@ -1,7 +1,7 @@
 {
   "model": {
     "model_dir": "./toy_model",
-    "wrapper_file": "wrapper_toy6.py",
+    "wrapper_file": "wrapper_toy6obj.py",
     "variables_csv": "../variable_declaration.csv",
     "objectives_csv": "../objective_declaration.csv"
   },
