@@ -19,7 +19,8 @@ import typer
 from ..algos.nsga2 import NSGA2
 from ..algos.nsga3 import NSGA3
 from ..core.adapters.csv_wrapper import CsvWrapperAdapter, CsvWrapperConfig  # used only in main
-from ..utils.pareto import nondominated_mask, epsilon_archive  # make sure these exist
+
+from ..utils.pareto import flag_nondominated  # programmatic API (epsilon-nondomination)
 
 app = typer.Typer(help="OptiVerse: evolutionary multi-objective optimization for simulators.")
 
@@ -39,6 +40,44 @@ except Exception:  # pragma: no cover
             h.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s"))
             root.addHandler(h)
         root.setLevel(logging.INFO)
+
+# ======================================================================================
+# Epsilon-nondomination wrappers (used everywhere instead of utils.nondominated_mask)
+# ======================================================================================
+
+def _nd_mask_eps(F: np.ndarray, *, eps: float = 1e-9, maximize_cols: Optional[List[int]] = None) -> np.ndarray:
+    """
+    Return a boolean mask of epsilon-nondominated rows using pareto.py.
+    - F is a 2D array of objectives in THEIR CURRENT sense.
+    - eps is the epsilon box size per objective; 1e-9 ≈ strict Pareto.
+    """
+    # IMPORTANT: pass F directly (single table), not [F]
+    masks = flag_nondominated(
+        tables=F,                       # <-- single table (not a list)
+        objectives=None,
+        epsilons=[float(eps)] * F.shape[1],
+        maximize=maximize_cols,
+        maximize_all=False,
+    )
+    # pareto.flag_nondominated returns:
+    #   - for a single table: list[bool] of length len(F)
+    #   - for multiple tables: list[list[bool]] (one list per table)
+    # Be defensive and unwrap if needed:
+    if isinstance(masks, list) and masks and isinstance(masks[0], (list, np.ndarray)):
+        masks = masks[0]
+    return np.asarray(masks, dtype=bool)
+
+
+def _eps_thin(F: np.ndarray, eps: float) -> np.ndarray:
+    """
+    Epsilon thinning on a (minimization) front using pareto.py (returns indices to keep).
+    This keeps at most one solution per epsilon-box.
+    """
+    if F.size == 0:
+        return np.empty((0,), dtype=int)
+    mask = _nd_mask_eps(F, eps=eps, maximize_cols=None)  # minimize view
+    return np.nonzero(mask)[0]
+
 
 # ======================================================================================
 # Lean worker helpers (unchanged)
@@ -130,7 +169,7 @@ def _eval_worker_lean(x: np.ndarray, spec: Dict[str, Any]) -> np.ndarray:
             if name not in obj_map:
                 raise KeyError(f"Objective '{name}' not found in objective_values.csv. Available: {list(obj_map.keys())}")
             v = float(obj_map[name])
-            out.append(v if minimize else -v)
+            out.append(v if minimize else -v)  # ensure minimization view for algorithms
         res = np.array(out, dtype=float)
         return res
 
@@ -336,8 +375,7 @@ def search(
             if ref_dirs.ndim == 1:
                 ref_dirs = ref_dirs[None, :]
         else:
-            # generate Das–Dennis (default choice in literature & libraries)  [5](https://pymoo.org/misc/reference_directions.html)
-            # We do not force N == |R|, but we show a friendly note if they differ.  [6](https://deap.readthedocs.io/en/master/examples/nsga3.html)[2](https://pymoo.org/algorithms/moo/nsga3.html)
+            # generate Das–Dennis (default choice in literature & libraries)
             def _das_dennis_local(M: int, p: int) -> np.ndarray:
                 parts = []
                 def rec(k, remaining, acc):
@@ -352,8 +390,7 @@ def search(
 
         if pop_size != len(ref_dirs):
             typer.echo(f"[search] NSGA-III: population_size={pop_size}, reference_dirs={len(ref_dirs)}; "
-                       f"it is common to set them equal for a 1:1 niche match. Proceeding anyway. "
-                       f"(Refs: Deb & Jain 2014; DEAP/pymoo examples)")  # [1](https://ieeexplore.ieee.org/document/6600851)[6](https://deap.readthedocs.io/en/master/examples/nsga3.html)[2](https://pymoo.org/algorithms/moo/nsga3.html)
+                       f"it is common to set them equal for a 1:1 niche match. Proceeding anyway.")
 
         algorithm = NSGA3(population_size=pop_size, n_obj=n_obj,
                           ref_dirs=ref_dirs if ref_dirs_csv else None,
@@ -453,11 +490,12 @@ def search(
             w = _csv.writer(f)
             w.writerow(["generation", "index"] + fit_headers + pop_headers + ["nd"])
         def _append_generation(g: int, P: np.ndarray, F: np.ndarray) -> None:
-            nd = nondominated_mask(F).astype(int).tolist()
+            # write epsilon-nondominated mask (minimization view) to the history
+            nd_mask = _nd_mask_eps(F, eps=1e-9, maximize_cols=None).astype(int).tolist()
             with history_path.open("a", newline="") as f:
                 w = _csv.writer(f)
                 for i in range(P.shape[0]):
-                    w.writerow([g, i] + F[i].tolist() + P[i].tolist() + [nd[i]])
+                    w.writerow([g, i] + F[i].tolist() + P[i].tolist() + [nd_mask[i]])
         _append_generation(0, pop, fit)
         if checkpoint_every and checkpoint_every > 0:
             _save_checkpoint(
@@ -496,11 +534,11 @@ def search(
 
     # Helper to append generation rows
     def append_generation(g: int, P: np.ndarray, F: np.ndarray) -> None:
-        nd = nondominated_mask(F).astype(int).tolist()
+        nd_mask = _nd_mask_eps(F, eps=1e-9, maximize_cols=None).astype(int).tolist()
         with history_path.open("a", newline="") as f:
             w = _csv.writer(f)
             for i in range(P.shape[0]):
-                w.writerow([g, i] + F[i].tolist() + P[i].tolist() + [nd[i]])
+                w.writerow([g, i] + F[i].tolist() + P[i].tolist() + [nd_mask[i]])
 
     # -------------------- Iterate remaining generations --------------------
     for g in range(start_gen + 1, generations + 1):
@@ -527,11 +565,11 @@ def search(
             w = _csv.writer(f_)
             w.writerow(fit_headers)
             w.writerows(fit.tolist())
-        nd = nondominated_mask(fit)
+        nd_mask = _nd_mask_eps(fit, eps=1e-9, maximize_cols=None)
         with (output / f"nd_mask{seed_suffix}.csv").open("w", newline="") as f_:
             w = _csv.writer(f_)
             w.writerow(["nd"])
-            w.writerows([[int(b)] for b in nd.tolist()])
+            w.writerows([[int(b)] for b in nd_mask.tolist()])
 
     typer.echo(
         f"Saved/updated single-file history at {history_path} "
@@ -551,7 +589,7 @@ def front(
 ):
     """
     Global Pareto front across ALL seeds & generations under results/.
-    Adds 'seed' column; optional --epsilon to thin the final frontier.
+    Adds 'seed' column; optional --epsilon to thin the final frontier (epsilon-nondomination).
     Output: results/pareto_front_all.csv
     """
     import pandas as pd
@@ -570,8 +608,8 @@ def front(
             sense = _detect_objective_sense(results_dir, obj_cols)
         assert sense is not None
 
-        F = df[obj_cols].to_numpy(dtype=float) * sense
-        nd = nondominated_mask(F)
+        F = df[obj_cols].to_numpy(dtype=float) * sense  # minimization view
+        nd = _nd_mask_eps(F, eps=1e-9, maximize_cols=None)
         kept = df.loc[nd].copy()
 
         m_seed = re.search(r"seed(\d+)", path.name)
@@ -582,111 +620,236 @@ def front(
 
     union = pd.concat(kept_frames, ignore_index=True)
     F_union = union[obj_cols].to_numpy(dtype=float) * sense  # type: ignore[arg-type]
-    nd_global = nondominated_mask(F_union)
+    nd_global = _nd_mask_eps(F_union, eps=1e-9, maximize_cols=None)
     idx_final = np.where(nd_global)[0]
 
     if epsilon is not None and epsilon > 0.0:
+        # epsilon-thin the global front (optional)
         F_front = F_union[idx_final]
-        idx_keep_in_front = epsilon_archive(F_front, eps=float(epsilon))
+        idx_keep_in_front = _eps_thin(F_front, eps=float(epsilon))
         idx_final = idx_final[idx_keep_in_front]
 
     out = results_dir / "pareto_front_all.csv"
     union.iloc[idx_final].to_csv(out, index=False)
     typer.echo(f"Global Pareto front saved to: {out}")
 
-
 # ======================================================================================
-# hypervolume (normalized, WIDE) (no --ref, optional --epsilon)
+# hypervolume (normalized, WIDE) — ALWAYS via pymoo; optional cumulative (monotone)
 # ======================================================================================
-
 @app.command("hypervolume")
 def hypervolume(
     epsilon: Optional[float] = typer.Option(
         None, "--epsilon", min=0.0,
-        help="ε-box thinning of each generation's front before HV (optional, after normalization)."
+        help="ε-thinning before HV (applied PER-GENERATION ONLY; ignored in --cumulative to preserve monotonicity)."
+    ),
+    cumulative: bool = typer.Option(
+        False, "--cumulative/--per-generation",
+        help="Cumulative ND union HV (monotone) or per-generation ND HV (default)."
+    ),
+    normalize_scope: str = typer.Option(
+        "global", "--normalize-scope",
+        help="Normalization scope: 'global' (all seeds/files, default) or 'per-seed'.",
+        case_sensitive=False
+    ),
+    debug: bool = typer.Option(
+        False, "--debug",
+        help="Write a debug CSV for the first seed (per-gen vs cumulative) and dump a diagnostic CSV if monotonicity would be violated."
+    ),
+    progress: bool = typer.Option(
+        True, "--progress/--no-progress",
+        help="Print per-seed and per-generation progress while computing HV."
+    ),
+    print_every: int = typer.Option(
+        1, "--print-every", min=1,
+        help="Print progress every N generations (default: 1)."
     ),
 ):
     """
-    Normalized hypervolume per generation; wide CSV (one column per seed).
-    No --ref needed (internally uses r = (1,1,...,1) after global normalization).
+    Normalized hypervolume per generation (wide CSV; one column per seed), **always via pymoo**.
+    - Default (per-generation): HV on each generation's (epsilon-)nondominated set (may dip).
+    - --cumulative: HV on the cumulative nondominated union up to g (monotone).
     Output: results/hypervolume.csv
     """
     import pandas as pd
+    import time as _t
+
+    # Require pymoo (fail fast)
+    try:
+        from pymoo.indicators.hv import HV  # type: ignore
+    except Exception as exc:  # pragma: no cover
+        raise typer.BadParameter(
+            "Hypervolume requires pymoo. Install with: pip install pymoo"
+        ) from exc
+
+    def _format_hms(seconds: float) -> str:
+        s = int(seconds)
+        return f"{s//3600:02d}:{(s%3600)//60:02d}:{s%60:02d}"
 
     results_dir = _results_dir("results")
     files = _find_history_files(results_dir)
 
-    try:
-        from pymoo.indicators.hv import HV  # type: ignore
-        hv_fn = lambda F, rp: float(HV(ref_point=rp)(F))
-        supports_nd = True
-    except Exception:
-        supports_nd = False
-        def hv_2d(F: np.ndarray, rp: np.ndarray) -> float:
-            F = F[np.argsort(F[:, 0])]
-            area = 0.0
-            prev_f1 = rp[1]
-            for f0, f1 in F:
-                width = max(0.0, rp[0] - f0)
-                height = max(0.0, prev_f1 - f1)
-                area += width * height
-                prev_f1 = min(prev_f1, f1)
-            return float(area)
-        hv_fn = hv_2d
+    if progress:
+        typer.echo(f"[hypervolume] Found {len(files)} history file(s) under {results_dir}")
 
     df0 = pd.read_csv(files[0])
     obj_cols = _detect_objective_columns(df0.columns, results_dir)
     sense = _detect_objective_sense(results_dir, obj_cols)
 
+    def _seed_label(path: Path) -> int | str:
+        m = re.search(r"seed(\d+)", path.name)
+        return int(m.group(1)) if m else path.stem
+
+    def load_minimized(path: Path) -> tuple[np.ndarray, np.ndarray]:
+        df = pd.read_csv(path)
+        F = df[obj_cols].to_numpy(dtype=float) * sense  # minimization
+        G = df["generation"].astype(int).to_numpy()
+        return F, G
+
     eps = 1e-12
-    global_min = None
-    global_max = None
+    if normalize_scope.lower() == "global":
+        g_min, g_max = None, None
+        t0_norm = _t.time()
+        for p in files:
+            F_min, _ = load_minimized(p)
+            m = np.nanmin(F_min, axis=0)
+            M = np.nanmax(F_min, axis=0)
+            if g_min is None:
+                g_min, g_max = m, M
+            else:
+                g_min = np.minimum(g_min, m)
+                g_max = np.maximum(g_max, M)
+        assert g_min is not None and g_max is not None
+        g_span = np.maximum(g_max - g_min, eps)
+        if progress:
+            typer.echo(f"[hypervolume] Global normalization stats computed in {_format_hms(_t.time()-t0_norm)}")
 
-    def iter_min_sense_chunks():
-        for path in files:
-            df = pd.read_csv(path)
-            F = df[obj_cols].to_numpy(dtype=float) * sense
-            yield F
-
-    for F_chunk in iter_min_sense_chunks():
-        cmin = F_chunk.min(axis=0)
-        cmax = F_chunk.max(axis=0)
-        if global_min is None:
-            global_min, global_max = cmin, cmax
-        else:
-            global_min = np.minimum(global_min, cmin)
-            global_max = np.maximum(global_max, cmax)
-
-    assert global_min is not None and global_max is not None
-    spans = np.maximum(global_max - global_min, eps)
-    ref_point = np.ones(len(obj_cols), dtype=float)
-
-    if not supports_nd and len(obj_cols) != 2:
-        raise typer.BadParameter(
-            "pymoo is not installed and objectives > 2. Install pymoo or reduce to 2 objectives."
-        )
+    typer.echo(
+        f"[hypervolume] mode={'cumulative' if cumulative else 'per-generation'}, "
+        f"normalize={normalize_scope}, epsilon={epsilon if (epsilon and not cumulative) else 'ignored in cumulative'}"
+    )
 
     per_seed_frames = []
-    for path in files:
-        df = pd.read_csv(path)
-        m_seed = re.search(r"seed(\d+)", path.name)
-        seed_label = int(m_seed.group(1)) if m_seed else path.stem
-        seed_col = f"seed{seed_label}"
+    first_seed_dual = None  # (per-gen DF, cumulative DF) when debug=True & cumulative=True
 
-        rows = []
-        for g, gdf in df.groupby("generation", sort=True):
-            F_min = gdf[obj_cols].to_numpy(dtype=float) * sense
-            F_norm = (F_min - global_min) / spans
-            nd = nondominated_mask(F_norm)
-            F_front = F_norm[nd]
-            if epsilon is not None and epsilon > 0.0 and F_front.shape[0] > 0:
-                idx_keep = epsilon_archive(F_front, eps=float(epsilon))
-                F_front = F_front[idx_keep]
-            hv_val = hv_fn(F_front, ref_point) if F_front.size > 0 else 0.0
-            rows.append({"generation": int(g), seed_col: float(hv_val)})
+    # Process each seed file
+    for ix, path in enumerate(files):
+        seed_lbl = _seed_label(path)
+        t0_seed = _t.time()
 
-        per_seed_frames.append(pd.DataFrame(rows))
+        if progress:
+            typer.echo(f"[hypervolume] Seed {seed_lbl}: loading & minimizing ...")
 
+        F_min, G = load_minimized(path)
+
+        if normalize_scope.lower() == "per-seed":
+            m = np.nanmin(F_min, axis=0); M = np.nanmax(F_min, axis=0)
+            span = np.maximum(M - m, eps)
+        else:
+            m, span = g_min, g_span  # global stats
+
+        F_norm = (F_min - m) / span
+        good = np.isfinite(F_norm).all(axis=1)
+        n_bad = (np.size(good) - int(good.sum()))
+        if n_bad and progress:
+            typer.echo(f"[hypervolume]   Seed {seed_lbl}: dropping {n_bad} invalid row(s) (NaN/Inf)")
+
+        F_norm, G = F_norm[good], G[good]
+        F_norm = np.clip(F_norm, 0.0, 1.0)
+
+        rp = np.ones(F_norm.shape[1], dtype=float) + 1e-9  # strict dominance
+        gens = np.unique(G)
+        n_gens = len(gens)
+        seed_col = f"seed{seed_lbl}"
+
+        if progress:
+            typer.echo(f"[hypervolume]   Seed {seed_lbl}: {n_gens} generation(s) | M={F_norm.shape[1]}")
+
+        rows_pg, rows_cu = [], []
+        if cumulative:
+            # Cumulative ND union (monotone) — NO ε-thinning here by design.
+            F_acc = np.empty((0, F_norm.shape[1]), dtype=float)
+            for j, g in enumerate(gens, 1):
+                Fg = F_norm[G == g]
+                if Fg.size:
+                    F_acc = np.vstack([F_acc, Fg])
+
+                nd_mask = _nd_mask_eps(F_acc, eps=1e-9, maximize_cols=None)
+                F_front_cu = F_acc[nd_mask]
+                hv_val = float(HV(ref_point=rp)(F_front_cu.astype(np.float64, copy=False)))
+                rows_cu.append({"generation": int(g), seed_col: hv_val})
+
+                # Progress line every print_every steps (or last)
+                if progress and (j % print_every == 0 or j == n_gens):
+                    typer.echo(
+                        f"[hypervolume]   Seed {seed_lbl} | gen {int(g)} ({j}/{n_gens}) "
+                        f"| cumulative front size={F_front_cu.shape[0]} | HV={hv_val:.6f}"
+                    )
+
+                # Monotonicity guard
+                if len(rows_cu) >= 2:
+                    prev = rows_cu[-2][seed_col]; curr = rows_cu[-1][seed_col]
+                    if curr + 1e-12 < prev:
+                        if debug:
+                            pd.DataFrame(F_front_cu, columns=obj_cols).to_csv(
+                                results_dir / f"hv_dbg_cumulative_drop_at_g{int(g)}_{path.name}.csv",
+                                index=False
+                            )
+                        raise RuntimeError(
+                            f"Cumulative HV decreased at generation {g} for {path.name}: {curr:.6f} < {prev:.6f}. "
+                            f"Check normalization and ND inputs."
+                        )
+
+                # Optional: also compute per-generation (first seed) for side-by-side debug
+                if debug and ix == 0:
+                    if Fg.size == 0:
+                        rows_pg.append({"generation": int(g), seed_col + "_pergen": 0.0})
+                    else:
+                        ndg = _nd_mask_eps(Fg, eps=1e-9, maximize_cols=None)
+                        Fg_front = Fg[ndg]
+                        if epsilon and epsilon > 0.0 and Fg_front.shape[0] > 0:
+                            idx = _eps_thin(Fg_front, eps=float(epsilon))
+                            Fg_front = Fg_front[idx] if idx.size > 0 else np.empty((0, Fg_front.shape[1]))
+                        rows_pg.append({
+                            "generation": int(g),
+                            seed_col + "_pergen": float(HV(ref_point=rp)(Fg_front.astype(np.float64, copy=False)))
+                        })
+
+            df_cu = pd.DataFrame(rows_cu)
+            per_seed_frames.append(df_cu)
+            if debug and ix == 0:
+                df_pg = pd.DataFrame(rows_pg)
+                first_seed_dual = (df_pg, df_cu)
+        else:
+            # Per-generation ND HV (may dip). Optional ε-thinning HERE only.
+            for j, g in enumerate(gens, 1):
+                Fg = F_norm[G == g]
+                if Fg.size == 0:
+                    rows_pg.append({"generation": int(g), seed_col: 0.0})
+                    if progress and (j % print_every == 0 or j == n_gens):
+                        typer.echo(f"[hypervolume]   Seed {seed_lbl} | gen {int(g)} ({j}/{n_gens}) | empty batch")
+                    continue
+
+                nd = _nd_mask_eps(Fg, eps=1e-9, maximize_cols=None)
+                F_front = Fg[nd]
+                if epsilon and epsilon > 0.0 and F_front.shape[0] > 0:
+                    idx_keep = _eps_thin(F_front, eps=float(epsilon))
+                    F_front = F_front[idx_keep] if idx_keep.size > 0 else np.empty((0, F_front.shape[1]))
+
+                hv_val = float(HV(ref_point=rp)(F_front.astype(np.float64, copy=False)))
+                rows_pg.append({"generation": int(g), seed_col: hv_val})
+
+                if progress and (j % print_every == 0 or j == n_gens):
+                    typer.echo(
+                        f"[hypervolume]   Seed {seed_lbl} | gen {int(g)} ({j}/{n_gens}) "
+                        f"| front size={F_front.shape[0]} | HV={hv_val:.6f}"
+                    )
+
+            per_seed_frames.append(pd.DataFrame(rows_pg))
+
+        if progress:
+            typer.echo(f"[hypervolume] Seed {seed_lbl} done in {_format_hms(_t.time()-t0_seed)}")
+
+    # Merge wide table
     hv_wide = None
     for df_seed in per_seed_frames:
         hv_wide = df_seed if hv_wide is None else hv_wide.merge(df_seed, on="generation", how="outer")
@@ -700,11 +863,22 @@ def hypervolume(
 
     out = results_dir / "hypervolume.csv"
     hv_wide.to_csv(out, index=False)
-    typer.echo(f"Normalized hypervolume (wide) saved to: {out}")
+
+    if debug and first_seed_dual is not None and cumulative:
+        pg, cu = first_seed_dual
+        dbg = pg.merge(cu, on="generation", how="outer").sort_values("generation")
+        dbg_out = results_dir / "hypervolume_debug_first_seed.csv"
+        dbg.to_csv(dbg_out, index=False)
+        typer.echo(f"[hypervolume] Debug (first seed per-gen vs cumulative) → {dbg_out}")
+
+    typer.echo(
+        f"[hypervolume] Saved: {out} "
+        f"(mode={'cumulative' if cumulative else 'per-generation'}, normalize={normalize_scope})"
+    )
 
 
 # ======================================================================================
-# Utilities (helpers for analysis commands)
+# Utilities (helpers for analysis commands) — unchanged
 # ======================================================================================
 
 def _results_dir(default: str = "results") -> Path:
@@ -714,14 +888,12 @@ def _results_dir(default: str = "results") -> Path:
         raise typer.BadParameter(f"Results directory not found: {rd}")
     return rd
 
-
 def _find_history_files(results_dir: Path) -> list[Path]:
     """Find all history*.csv directly under results/ (non-recursive)."""
     files = sorted(results_dir.glob("history*.csv"))
     if not files:
         raise typer.BadParameter(f"No history*.csv files found under: {results_dir}")
     return files
-
 
 def _detect_objective_columns(df_columns: Iterable[str], results_dir: Path) -> list[str]:
     """
@@ -731,12 +903,10 @@ def _detect_objective_columns(df_columns: Iterable[str], results_dir: Path) -> l
     """
     cols = list(df_columns)
 
-    # 1) Unlabeled default (f0..fM)
     fcols = [c for c in cols if re.fullmatch(r"f\d+", c)]
     if fcols:
         return fcols
 
-    # 2) Labeled: read declaration from nearby filesystem (results/ or its parents)
     import pandas as pd
     candidates = [
         results_dir / "objective_declaration.csv",
@@ -752,14 +922,12 @@ def _detect_objective_columns(df_columns: Iterable[str], results_dir: Path) -> l
             if all(n in cols for n in names):
                 return names
 
-    # 3) Helpful error
     raise typer.BadParameter(
         "Could not auto-detect objective columns.\n"
         "- If your history has unlabeled objectives, they must be named f0,f1,...\n"
         "- If labeled, place `objective_declaration.csv` next to results/ (or its parent), "
         "and ensure history was written with --label-columns."
     )
-
 
 def _detect_objective_sense(results_dir: Path, obj_cols: list[str]) -> np.ndarray:
     """
