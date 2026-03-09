@@ -608,7 +608,7 @@ def front(
             sense = _detect_objective_sense(results_dir, obj_cols)
         assert sense is not None
 
-        F = df[obj_cols].to_numpy(dtype=float) * sense  # minimization view
+        F = df[obj_cols].to_numpy(dtype=float) 
         nd = _nd_mask_eps(F, eps=1e-9, maximize_cols=None)
         kept = df.loc[nd].copy()
 
@@ -619,7 +619,7 @@ def front(
         kept_frames.append(kept)
 
     union = pd.concat(kept_frames, ignore_index=True)
-    F_union = union[obj_cols].to_numpy(dtype=float) * sense  # type: ignore[arg-type]
+    F_union = union[obj_cols].to_numpy(dtype=float)  # type: ignore[arg-type]
     nd_global = _nd_mask_eps(F_union, eps=1e-9, maximize_cols=None)
     idx_final = np.where(nd_global)[0]
 
@@ -701,7 +701,7 @@ def hypervolume(
 
     def load_minimized(path: Path) -> tuple[np.ndarray, np.ndarray]:
         df = pd.read_csv(path)
-        F = df[obj_cols].to_numpy(dtype=float) * sense  # minimization
+        F = df[obj_cols].to_numpy(dtype=float)
         G = df["generation"].astype(int).to_numpy()
         return F, G
 

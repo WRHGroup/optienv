@@ -22,25 +22,39 @@ def _crowding_distance(F: np.ndarray) -> np.ndarray:
 
 def _fast_nd_sort(F: np.ndarray) -> list[np.ndarray]:
     n = F.shape[0]
-    S = [set() for _ in range(n)]; n_dom = np.zeros(n, int)
+    S = [set() for _ in range(n)]        # S[p] : set of solutions dominated by p
+    n_dom = np.zeros(n, int)             # n_dom[p] : number of solutions that dominate p
     fronts: list[list[int]] = [[]]
+
     for p in range(n):
         for q in range(n):
-            if p == q: continue
+            if p == q:
+                continue
+            # p dominates q (minimization)
             if np.all(F[p] <= F[q]) and np.any(F[p] < F[q]):
                 S[p].add(q)
+                n_dom[q] += 1            # <-- FIX: count dominators for q
+            # q dominates p (minimization)
             elif np.all(F[q] <= F[p]) and np.any(F[q] < F[p]):
+                S[q].add(p)              # <-- mirror S update
                 n_dom[p] += 1
-        if n_dom[p] == 0: fronts[0].append(p)
+
+    # first front
+    fronts[0] = [p for p in range(n) if n_dom[p] == 0]
+
     i = 0
     while fronts[i]:
         nxt: list[int] = []
         for p in fronts[i]:
             for q in S[p]:
                 n_dom[q] -= 1
-                if n_dom[q] == 0: nxt.append(q)
-        i += 1; fronts.append(nxt)
-    return [np.array(f, int) for f in fronts if f]
+                if n_dom[q] == 0:
+                    nxt.append(q)
+        i += 1
+        fronts.append(nxt)
+
+    # return non-empty as arrays
+    return [np.array(f, dtype=int) for f in fronts if f]
 
 class NSGA2:
     def __init__(self, population_size: int = 100, pc: float = 0.9, pm: float | None = None,

@@ -7,7 +7,7 @@
     "objectives_csv": "../objective_declaration.csv"
   },
   "algorithm": {
-    "population_size": 30,
-    "generations": 40
+    "population_size": 10,
+    "generations": 1000
   }
 }
