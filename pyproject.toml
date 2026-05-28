@@ -3,7 +3,7 @@ requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "optiverse"
+name = "optienv"
 version = "0.1.1"
 description = "A plugin-driven bridge between simulation models and multi-objective evolutionary algorithms."
 readme = "README.md"
@@ -33,7 +33,7 @@ dev = [
 ]
 
 [project.scripts]
-optiverse = "optiverse.cli.app:app"
+optienv = "optienv.cli.app:app"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

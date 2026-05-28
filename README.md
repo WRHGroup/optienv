@@ -1,6 +1,6 @@
-# OptiVerse
+# Optienv
 
-**OptiVerse** is a lightweight, *simulator‑friendly* framework for **multi‑objective optimization** (MOO). It wraps your external models with a simple CSV interface and lets you run evolutionary algorithms—currently **NSGA‑II** and **NSGA‑III**—at scale. It focuses on:
+**Optienv** is a lightweight, *simulator‑friendly* framework for **multi‑objective optimization** (MOO). It wraps your external models with a simple CSV interface and lets you run evolutionary algorithms—currently **NSGA‑II** and **NSGA‑III**—at scale. It focuses on:
 
 - **Reproducible experiments**: single‑file per‑seed histories, optional checkpoints/resume, and fixed seeds.
 - **Simulator integration**: CSV adapter that reads variable assignments and writes objective values—no code rewrites inside your model.
@@ -74,7 +74,7 @@
 ### From PyPI
 
 ```bash
-pip install optiverse
+pip install optienv
 ```
 
 > Tip: Use a virtual environment (e.g., `python -m venv .venv && source .venv/bin/activate` on macOS/Linux or `.venv\Scripts\activate` on Windows).
@@ -82,8 +82,8 @@ pip install optiverse
 ### For Development
 
 ```bash
-git clone https://github.com/WRHGroup/optiverse.git
-cd optiverse
+git clone https://github.com/WRHGroup/optienv.git
+cd optienv
 pip install -e .
 ```
 
@@ -105,7 +105,7 @@ def search_and_apply_variables(model_folder: str) -> None:
     ...
 ```
 
-At runtime, OptiVerse:
+At runtime, Optienv:
 
 1. Copies `model_dir` to a temp **work** folder.
 2. Writes `work/variable_values.csv` (columns: `Name,Value`).
@@ -165,7 +165,7 @@ generation,index,<objective_1>,...,<objective_M>,<x1>,...,<xN>,nd
 
 Run NSGA‑II:
 ```bash
-optiverse search \
+optienv search \
   -c path/to/run_sim.json \
   --algo nsga2 \
   -j 4 --seed 7 \
@@ -175,7 +175,7 @@ optiverse search \
 
 Run NSGA‑III with reference directions:
 ```bash
-optiverse search \
+optienv search \
   -c path/to/run_sim.json \
   --algo nsga3 --ref-parts 4 \
   -j 4 --seed 7 \
@@ -208,7 +208,7 @@ optiverse search \
 Compute a **global** non‑dominated set across **all** `results/history*.csv`:
 
 ```bash
-optiverse front
+optienv front
 # → results/pareto_front_all.csv
 ```
 
@@ -223,7 +223,7 @@ optiverse front
 Compute **normalized** HV per generation for **each seed**, and write a **wide** CSV (one HV column per seed):
 
 ```bash
-optiverse hypervolume
+optienv hypervolume
 # → results/hypervolume.csv
 # columns: generation, seed7, seed11, ...
 ```
@@ -255,17 +255,17 @@ NSGA‑III uses **reference‑direction niching** (instead of crowding distance)
 Enable checkpoints during a run:
 
 ```bash
-optiverse search ... --checkpoint-every 1 --checkpoint-path results/checkpoint.npz
+optienv search ... --checkpoint-every 1 --checkpoint-path results/checkpoint.npz
 ```
 
 Resume later:
 
 ```bash
 # Resume from default checkpoint
-optiverse search ... --resume-latest
+optienv search ... --resume-latest
 
 # Or resume from a specific path
-optiverse search ... --resume-from path/to/checkpoint.npz
+optienv search ... --resume-from path/to/checkpoint.npz
 ```
 
 Checkpoints store generation index, population, fitness, RNG state, variable/objective names, bounds, history path, and model_dir—so resuming is safe and consistent.
@@ -307,16 +307,16 @@ Run:
 cd examples/toy_3obj
 
 # NSGA‑II
-optiverse search -c run_sim_example.json \
+optienv search -c run_sim_example.json \
   --algo nsga2 -j 2 --seed 7 --label-columns --no-save-final-csvs
 
 # NSGA‑III
-optiverse search -c run_sim_example.json \
+optienv search -c run_sim_example.json \
   --algo nsga3 --ref-parts 8 -j 2 --seed 7 --label-columns --no-save-final-csvs
 
 # Global front and HV
-optiverse front --epsilon 0.02
-optiverse hypervolume
+optienv front --epsilon 0.02
+optienv hypervolume
 ```
 
 ### 6‑Objective Toy (NSGA‑III vs NSGA‑II)
@@ -337,18 +337,18 @@ For **M=6**, `--ref-parts 4` ⇒ 126 reference directions; match pop≈126 for N
 cd examples/toy_6obj
 
 # NSGA‑II baseline
-optiverse search -c run_sim_example.json \
+optienv search -c run_sim_example.json \
   --algo nsga2 -j 4 --seed 7 --label-columns --no-save-final-csvs
 
 # NSGA‑III with matched pop size (edit JSON or override before running)
 # Example using jq to set population to 126:
 jq '.algorithm.population_size=126' run_sim_example.json > run_sim_example_126.json
 
-optiverse search -c run_sim_example_126.json \
+optienv search -c run_sim_example_126.json \
   --algo nsga3 --ref-parts 4 -j 4 --seed 7 --label-columns --no-save-final-csvs
 
 # Compare HV across seeds/generations
-optiverse hypervolume
+optienv hypervolume
 ```
 
 You should see NSGA‑III achieve **higher normalized HV** and better spread in 6 objectives for a similar evaluation budget.
@@ -392,6 +392,6 @@ You should see NSGA‑III achieve **higher normalized HV** and better spread in 
 
 ## Citation / Acknowledgement
 
-If OptiVerse helps your research or engineering work, please cite or acknowledge it. This greatly helps the project grow and justifies continued development.
+If Optienv helps your research or engineering work, please cite or acknowledge it. This greatly helps the project grow and justifies continued development.
 
 ---
