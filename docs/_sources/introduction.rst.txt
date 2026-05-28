@@ -1,8 +1,8 @@
 ========================
-OptiVerse: Introduction
+Optienv: Introduction
 ========================
 
-**OptiVerse** is a lightweight, simulator‑friendly framework for
+**Optienv** is a lightweight, simulator‑friendly framework for
 **multi‑objective optimization (MOO)**. It wraps external models with a
 simple CSV interface and runs evolutionary algorithms—currently
 :ref:`NSGA‑II <modules-nsga2>` and :ref:`NSGA‑III <modules-nsga3>`—at scale.

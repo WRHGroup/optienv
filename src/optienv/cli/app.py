@@ -1,4 +1,4 @@
-# src/optiverse/cli/app.py
+# src/optienv/cli/app.py
 from __future__ import annotations
 
 import csv as _csv
@@ -22,7 +22,7 @@ from ..core.adapters.csv_wrapper import CsvWrapperAdapter, CsvWrapperConfig  # u
 
 from ..utils.pareto import flag_nondominated  # programmatic API (epsilon-nondomination)
 
-app = typer.Typer(help="OptiVerse: evolutionary multi-objective optimization for simulators.")
+app = typer.Typer(help="Optienv: evolutionary multi-objective optimization for simulators.")
 
 # ---- Optional logging (safe fallback if helper missing) ----
 try:

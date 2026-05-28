@@ -1,7 +1,7 @@
 License
 =======
 
-OptiVerse is released under the **MIT License**.
+Optienv is released under the **MIT License**.
 
 .. code-block:: text
 

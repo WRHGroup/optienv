@@ -4,7 +4,7 @@
 Modules and Architecture (Key Parts)
 =====================================
 
-This page gives a curated overview of OptiVerse internals to help you
+This page gives a curated overview of Optienv internals to help you
 extend and maintain the codebase.
 
 .. contents::
@@ -38,7 +38,7 @@ High‑level architecture
 Core packages
 =============
 
-``optiverse.cli.app`` (CLI entry points)
+``optienv.cli.app`` (CLI entry points)
 ---------------------------------------
 
 - Implements the commands documented in :ref:`cli`.
@@ -49,12 +49,12 @@ Core packages
   - ``front`` computes the global non‑dominated set (optionally ε‑thinned).
   - ``hypervolume`` computes normalized HV (wide format).
 
-``optiverse.core.adapters.csv_wrapper`` (CSV model adapter)
+``optienv.core.adapters.csv_wrapper`` (CSV model adapter)
 -----------------------------------------------------------
 
 **Wrapper contract**
 
-- OptiVerse writes ``variable_values.csv`` in a **working copy** of your model.
+- Optienv writes ``variable_values.csv`` in a **working copy** of your model.
 - Your wrapper must define:
 
   .. code-block:: python
@@ -72,7 +72,7 @@ Core packages
   deleted (unless ``--keep-work-on-error``).
 - The adapter uses robust deletion with retries (Windows‑friendly).
 
-``optiverse.algos.nsga2`` (NSGA‑II)
+``optienv.algos.nsga2`` (NSGA‑II)
 -----------------------------------
 
 - ``NSGA2(population_size, seed=None)`` exposes ``initialize(n_var, bounds)`` and
@@ -94,7 +94,7 @@ Implementation notes:
 
      assert survivors.shape[0] == population_size
 
-``optiverse.algos.nsga3`` (NSGA‑III)
+``optienv.algos.nsga3`` (NSGA‑III)
 ------------------------------------
 
 - Many‑objective extension of NSGA‑II, replacing crowding with **reference‑direction niching**.
@@ -114,7 +114,7 @@ Implementation notes:
 - Normalize objective values before association (min‑max normalization suffices
   in practice for robustness).
 
-``optiverse.utils.pareto``
+``optienv.utils.pareto``
 --------------------------
 
 - ``nondominated_mask(F)``: boolean mask of non‑dominated rows for a minimization array

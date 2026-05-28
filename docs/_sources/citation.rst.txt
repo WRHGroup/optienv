@@ -1,7 +1,7 @@
 Citation
 ========
 
-If OptiVerse helps your research or engineering work, please cite or acknowledge it.
+If Optienv helps your research or engineering work, please cite or acknowledge it.
 
 Suggested citation
 ==================

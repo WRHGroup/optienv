@@ -14,15 +14,15 @@ Install from PyPI
 
 .. code-block:: bash
 
-   pip install optiverse
+   pip install optienv
 
 Install for development
 =======================
 
 .. code-block:: bash
 
-   git clone https://github.com/WRHGroup/optiverse.git
-   cd optiverse
+   git clone https://github.com/WRHGroup/optienv.git
+   cd optienv
    pip install -e .
 
 Smoke tests
@@ -30,7 +30,7 @@ Smoke tests
 
 .. code-block:: bash
 
-   optiverse --help
-   optiverse search --help
-   optiverse front --help
-   optiverse hypervolume --help
+   optienv --help
+   optienv search --help
+   optienv front --help
+   optienv hypervolume --help

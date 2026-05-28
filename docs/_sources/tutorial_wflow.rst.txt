@@ -8,7 +8,7 @@ Goal
 ====
 
 This tutorial shows how to calibrate a Wflow‑based hydrological model using
-OptiVerse. We treat calibration as a **three‑objective** optimization problem:
+Optienv. We treat calibration as a **three‑objective** optimization problem:
 
 - **KGEp** — maximize
 - **logNSE** — maximize
@@ -41,7 +41,7 @@ Folder structure (example)
 Wrapper contract (recap)
 ========================
 
-OptiVerse writes ``variable_values.csv`` inside a **working copy** of your
+Optienv writes ``variable_values.csv`` inside a **working copy** of your
 model directory. Your wrapper must:
 
 1. Read ``variable_values.csv`` and apply parameters to the model inputs.
@@ -272,7 +272,7 @@ NSGA‑II baseline
 
 .. code-block:: bash
 
-   optiverse search -c run_search.json \
+   optienv search -c run_search.json \
      --algo nsga2 -j 4 --seed 11 \
      --label-columns --no-save-final-csvs
 
@@ -290,7 +290,7 @@ convenient choices are:
    # Example with p=12 (91 directions)
    jq '.algorithm.population_size=91' run_search.json > run_search_nsga3.json
 
-   optiverse search -c run_search_nsga3.json \
+   optienv search -c run_search_nsga3.json \
      --algo nsga3 --ref-parts 12 \
      -j 4 --seed 11 \
      --label-columns --no-save-final-csvs
@@ -307,7 +307,7 @@ environment variables:
 .. code-block:: bash
 
    WRAPPER_WARMUP_YEARS=1 WRAPPER_EPS_FACTOR=0.25 \
-   optiverse search -c run_search.json --algo nsga2 -j 4 --seed 11
+   optienv search -c run_search.json --algo nsga2 -j 4 --seed 11
 
 Outputs & analysis
 ==================
@@ -317,14 +317,14 @@ Outputs & analysis
 
   .. code-block:: bash
 
-     optiverse front --epsilon 0.01
+     optienv front --epsilon 0.01
      # → results/pareto_front_all.csv
 
 - **Normalized HV** (wide format by seed):
 
   .. code-block:: bash
 
-     optiverse hypervolume
+     optienv hypervolume
      # → results/hypervolume.csv
 
 Troubleshooting
@@ -351,7 +351,7 @@ Troubleshooting
 
   .. code-block:: bash
 
-     optiverse search ... --checkpoint-every 1 --resume-latest
+     optienv search ... --checkpoint-every 1 --resume-latest
 
 Appendix B (expected metrics format)
 ====================================
