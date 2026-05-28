@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: Six‑Objective Toy Optimization &mdash; Optiverse Documentation 0.1.1 documentation</title>
+  <title>Tutorial: Six‑Objective Toy Optimization &mdash; Optienv Documentation 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Optiverse Documentation
+            Optienv Documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,7 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">OptiVerse: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Optienv: Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules and Architecture (Key Parts)</a></li>
@@ -80,7 +80,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Optiverse Documentation</a>
+          <a href="index.html">Optienv Documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -109,7 +109,7 @@ with NSGA‑II). You will:</p>
 <ol class="arabic simple">
 <li><p>Create a minimal simulator wrapper (pure Python; no external tools).</p></li>
 <li><p>Define variables and objectives via CSV.</p></li>
-<li><p>Run <strong>NSGA‑II</strong> and <strong>NSGA‑III</strong> using <a class="reference internal" href="command_line.html#cli"><span class="std std-ref">optiverse search</span></a>.</p></li>
+<li><p>Run <strong>NSGA‑II</strong> and <strong>NSGA‑III</strong> using <a class="reference internal" href="command_line.html#cli"><span class="std std-ref">optienv search</span></a>.</p></li>
 <li><p>Extract the global front and compute normalized hypervolume (HV).</p></li>
 </ol>
 <section id="why-nsgaiii-here">
@@ -233,7 +233,7 @@ f6_sum_max,maximize
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/toy_6obj
 
 <span class="c1"># NSGA‑II baseline</span>
-optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span><span class="se">\</span>
+optienv<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
 </pre></div>
@@ -252,7 +252,7 @@ Das–Dennis partitions <code class="docutils literal notranslate"><span class="
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you have jq:</span>
 jq<span class="w"> </span><span class="s1">&#39;.algorithm.population_size=126&#39;</span><span class="w"> </span>run_search.json<span class="w"> </span>&gt;<span class="w"> </span>run_search_126.json
 
-optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search_126.json<span class="w"> </span><span class="se">\</span>
+optienv<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search_126.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--algo<span class="w"> </span>nsga3<span class="w"> </span>--ref-parts<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
@@ -265,11 +265,11 @@ as possible (some niches will remain empty).</p>
 <section id="step-6-analyze-global-front-normalized-hv">
 <h2>Step 6 — Analyze: global front &amp; normalized HV<a class="headerlink" href="#step-6-analyze-global-front-normalized-hv" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Global non‑dominated set (optionally ε‑thinned)</span>
-optiverse<span class="w"> </span>front<span class="w"> </span>--epsilon<span class="w"> </span><span class="m">0</span>.01
+optienv<span class="w"> </span>front<span class="w"> </span>--epsilon<span class="w"> </span><span class="m">0</span>.01
 <span class="c1"># → results/pareto_front_all.csv</span>
 
 <span class="c1"># Normalized hypervolume (wide format by seed)</span>
-optiverse<span class="w"> </span>hypervolume
+optienv<span class="w"> </span>hypervolume
 <span class="c1"># → results/hypervolume.csv</span>
 </pre></div>
 </div>
@@ -289,7 +289,7 @@ on this toy, especially when population ≈ number of reference directions.</p><
 <li><p>Keep each experiment in a <strong>separate results folder</strong> or use different
 <code class="docutils literal notranslate"><span class="pre">--seed</span></code> values to avoid mixing histories.</p></li>
 <li><p>For long runs, add checkpoints:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>search<span class="w"> </span>...<span class="w"> </span>--checkpoint-every<span class="w"> </span><span class="m">1</span><span class="w"> </span>--resume-latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optienv<span class="w"> </span>search<span class="w"> </span>...<span class="w"> </span>--checkpoint-every<span class="w"> </span><span class="m">1</span><span class="w"> </span>--resume-latest
 </pre></div>
 </div>
 </li>

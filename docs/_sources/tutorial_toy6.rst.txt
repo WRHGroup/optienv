@@ -13,7 +13,7 @@ with NSGA‑II). You will:
 
 1. Create a minimal simulator wrapper (pure Python; no external tools).
 2. Define variables and objectives via CSV.
-3. Run **NSGA‑II** and **NSGA‑III** using :ref:`optiverse search <cli>`.
+3. Run **NSGA‑II** and **NSGA‑III** using :ref:`optienv search <cli>`.
 4. Extract the global front and compute normalized hypervolume (HV).
 
 Why NSGA‑III here?
@@ -151,7 +151,7 @@ Step 4 — Run NSGA‑II (baseline)
    cd examples/toy_6obj
 
    # NSGA‑II baseline
-   optiverse search -c run_search.json \
+   optienv search -c run_search.json \
      --algo nsga2 -j 4 --seed 7 \
      --label-columns --no-save-final-csvs
 
@@ -173,7 +173,7 @@ Option A (edit JSON once):
    # If you have jq:
    jq '.algorithm.population_size=126' run_search.json > run_search_126.json
 
-   optiverse search -c run_search_126.json \
+   optienv search -c run_search_126.json \
      --algo nsga3 --ref-parts 4 \
      -j 4 --seed 7 \
      --label-columns --no-save-final-csvs
@@ -188,11 +188,11 @@ Step 6 — Analyze: global front & normalized HV
 .. code-block:: bash
 
    # Global non‑dominated set (optionally ε‑thinned)
-   optiverse front --epsilon 0.01
+   optienv front --epsilon 0.01
    # → results/pareto_front_all.csv
 
    # Normalized hypervolume (wide format by seed)
-   optiverse hypervolume
+   optienv hypervolume
    # → results/hypervolume.csv
 
 What to expect
@@ -212,7 +212,7 @@ Tips & Troubleshooting
 
   .. code-block:: bash
 
-     optiverse search ... --checkpoint-every 1 --resume-latest
+     optienv search ... --checkpoint-every 1 --resume-latest
 
 - If you see any generation with more rows than the population size,
   ensure the algorithm’s survival step **truncates** the splitting front.

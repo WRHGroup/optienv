@@ -4,7 +4,7 @@
 Command Line Interface
 ========================
 
-This page documents the OptiVerse CLI. The main workflow is:
+This page documents the Optienv CLI. The main workflow is:
 
 1. Prepare a JSON configuration and a model wrapper (CSV contract)
 2. Run an evolutionary **search**
@@ -18,7 +18,7 @@ This page documents the OptiVerse CLI. The main workflow is:
 search
 ======
 
-``optiverse search`` runs the evolutionary optimization and writes a single
+``optienv search`` runs the evolutionary optimization and writes a single
 history file per seed in ``results/``.
 
 Basic usage
@@ -26,7 +26,7 @@ Basic usage
 
 .. code-block:: bash
 
-   optiverse search \
+   optienv search \
      -c path/to/run_sim.json \
      -j 4 --seed 7 \
      --label-columns --no-save-final-csvs
@@ -79,11 +79,11 @@ front
 
 .. _cli-front:
 
-``optiverse front`` extracts a **global** Pareto front across all seeds and generations.
+``optienv front`` extracts a **global** Pareto front across all seeds and generations.
 
 .. code-block:: bash
 
-   optiverse front
+   optienv front
    # → results/pareto_front_all.csv
 
 Options:
@@ -101,12 +101,12 @@ hypervolume
 
 .. _cli-hv:
 
-``optiverse hypervolume`` computes **normalized** hypervolume per generation for each seed
+``optienv hypervolume`` computes **normalized** hypervolume per generation for each seed
 and writes a wide CSV (one HV column per seed).
 
 .. code-block:: bash
 
-   optiverse hypervolume
+   optienv hypervolume
    # → results/hypervolume.csv
 
 Notes:
@@ -124,7 +124,7 @@ version
 
 .. code-block:: bash
 
-   optiverse version
+   optienv version
 
 Prints the current package version.
 
@@ -146,5 +146,5 @@ NSGA‑III with reference directions
 .. code-block:: bash
 
    # Das–Dennis with 4 partitions
-   optiverse search \
+   optienv search \
      -c path/to/run_sim.json \

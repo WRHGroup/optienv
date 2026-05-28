@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: Calibrating a Wflow Hydrological Model &mdash; Optiverse Documentation 0.1.1 documentation</title>
+  <title>Tutorial: Calibrating a Wflow Hydrological Model &mdash; Optienv Documentation 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Optiverse Documentation
+            Optienv Documentation
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,7 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">OptiVerse: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Optienv: Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules and Architecture (Key Parts)</a></li>
@@ -87,7 +87,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Optiverse Documentation</a>
+          <a href="index.html">Optienv Documentation</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -111,7 +111,7 @@
 <section id="goal">
 <h2>Goal<a class="headerlink" href="#goal" title="Link to this heading"></a></h2>
 <p>This tutorial shows how to calibrate a Wflow‑based hydrological model using
-OptiVerse. We treat calibration as a <strong>three‑objective</strong> optimization problem:</p>
+Optienv. We treat calibration as a <strong>three‑objective</strong> optimization problem:</p>
 <ul class="simple">
 <li><p><strong>KGEp</strong> — maximize</p></li>
 <li><p><strong>logNSE</strong> — maximize</p></li>
@@ -143,7 +143,7 @@ OptiVerse. We treat calibration as a <strong>three‑objective</strong> optimiza
 </section>
 <section id="wrapper-contract-recap">
 <h2>Wrapper contract (recap)<a class="headerlink" href="#wrapper-contract-recap" title="Link to this heading"></a></h2>
-<p>OptiVerse writes <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> inside a <strong>working copy</strong> of your
+<p>Optienv writes <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> inside a <strong>working copy</strong> of your
 model directory. Your wrapper must:</p>
 <ol class="arabic simple">
 <li><p>Read <code class="docutils literal notranslate"><span class="pre">variable_values.csv</span></code> and apply parameters to the model inputs.</p></li>
@@ -360,7 +360,7 @@ InfiltCapSoil.12,100,400
 <h2>Running the calibration<a class="headerlink" href="#running-the-calibration" title="Link to this heading"></a></h2>
 <section id="nsgaii-baseline">
 <h3>NSGA‑II baseline<a class="headerlink" href="#nsgaii-baseline" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optienv<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
 </pre></div>
@@ -377,7 +377,7 @@ convenient choices are:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example with p=12 (91 directions)</span>
 jq<span class="w"> </span><span class="s1">&#39;.algorithm.population_size=91&#39;</span><span class="w"> </span>run_search.json<span class="w"> </span>&gt;<span class="w"> </span>run_search_nsga3.json
 
-optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search_nsga3.json<span class="w"> </span><span class="se">\</span>
+optienv<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search_nsga3.json<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--algo<span class="w"> </span>nsga3<span class="w"> </span>--ref-parts<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--label-columns<span class="w"> </span>--no-save-final-csvs
@@ -391,7 +391,7 @@ of reference directions generally improves spread.)</p>
 <p>If your metrics script supports warm‑up/epsilon factors, you can pass them as
 environment variables:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WRAPPER_WARMUP_YEARS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">WRAPPER_EPS_FACTOR</span><span class="o">=</span><span class="m">0</span>.25<span class="w"> </span><span class="se">\</span>
-optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span>
+optienv<span class="w"> </span>search<span class="w"> </span>-c<span class="w"> </span>run_search.json<span class="w"> </span>--algo<span class="w"> </span>nsga2<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">11</span>
 </pre></div>
 </div>
 </section>
@@ -401,13 +401,13 @@ optiverse<span class="w"> </span>search<span class="w"> </span>-c<span class="w"
 <ul>
 <li><p><strong>History</strong>: <code class="docutils literal notranslate"><span class="pre">results/history_seed{SEED}.csv</span></code> — all generations in one file</p></li>
 <li><p><strong>Global front</strong> (optionally ε‑thinned):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>front<span class="w"> </span>--epsilon<span class="w"> </span><span class="m">0</span>.01
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optienv<span class="w"> </span>front<span class="w"> </span>--epsilon<span class="w"> </span><span class="m">0</span>.01
 <span class="c1"># → results/pareto_front_all.csv</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Normalized HV</strong> (wide format by seed):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>hypervolume
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optienv<span class="w"> </span>hypervolume
 <span class="c1"># → results/hypervolume.csv</span>
 </pre></div>
 </div>
@@ -445,7 +445,7 @@ with checkpoints, the population is dictated by the checkpoint.</p></li>
 </ul>
 </li>
 <li><p><strong>Checkpoint/resume for long jobs</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optiverse<span class="w"> </span>search<span class="w"> </span>...<span class="w"> </span>--checkpoint-every<span class="w"> </span><span class="m">1</span><span class="w"> </span>--resume-latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>optienv<span class="w"> </span>search<span class="w"> </span>...<span class="w"> </span>--checkpoint-every<span class="w"> </span><span class="m">1</span><span class="w"> </span>--resume-latest
 </pre></div>
 </div>
 </li>
