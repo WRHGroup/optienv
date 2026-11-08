@@ -6,23 +6,19 @@ import sys
 import csv
 import pandas as pd
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-if HERE not in sys.path:
-    sys.path.insert(0, HERE)
-
-
 def create_tbl_files(model_folder):
-    # Load CSV written by the calibration tool (MOEA/NSGAII)
+
+    # Load CSV
     df = pd.read_csv(os.path.join(model_folder, "variable_values.csv"))
     output_folder = model_folder
 
-    # Split 'Name' (e.g. "thetaS.3") into Parameter and calibration class id (handles names without a dot safely)
+    # Split 'Name' into Parameter and Layer (handles names without a dot safely)
     split = df['Name'].astype(str).str.split('.', n=1, expand=True)
     df['Parameter'] = split[0]
-    df['ClassID'] = split[1] if split.shape[1] > 1 else None
+    df['Layer'] = split[1]
 
-    df['ClassID'] = pd.to_numeric(
-        df['ClassID'].astype(str).str.extract(r'(\d+)', expand=False),
+    df['Layer'] = pd.to_numeric(
+        df['Layer'].str.extract(r'(\d+)', expand=False),
         errors='coerce'
     ).fillna(1).astype(int)
 
@@ -30,38 +26,36 @@ def create_tbl_files(model_folder):
     parameters = df['Parameter'].unique()
 
     # Iterate through parameters and save to separate .tbl files
-    # Line format: <class_id> 1 <,12] <value>
-    # update_staticmaps.py reads only the first column (class id) and the last column (value).
     for param in parameters:
-        df_param = df[df['Parameter'] == param].sort_values('ClassID')
-        lines = [f"{int(row.ClassID)}\t1\t<,12]  {float(row.Value):.6f}"
+        df_param = df[df['Parameter'] == param].sort_values('Layer')
+
+        # Build lines (two spaces before the value) and write
+        lines = [f"{int(row.Layer)}\t1\t<,12]  {float(row.Value):.6f}"
                  for row in df_param.itertuples(index=False)]
 
         filename = os.path.join(output_folder, f"{param}.tbl")
         with open(filename, 'w') as f:
             f.write('\n'.join(lines))
 
-
 def update_static_maps(model_folder):
-    # Optional env overrides for the updater (unset = original behaviour)
-    scope = os.environ.get("WRAPPER_BOUNDS_SCOPE")   # "all" (default) or "calibrated"
-    strict = os.environ.get("WRAPPER_STRICT")        # "1" to abort on out of range .tbl values
-
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
     import update_staticmaps
     sys.argv = [sys.argv[0],
-                "--staticmap", os.path.join(model_folder, "staticmaps.nc"),
+                "--staticmap", (model_folder + "/staticmaps.nc"),
                 "--param_dir", model_folder,
                 "--backup"]
-    if scope:
-        sys.argv += ["--bounds_scope", scope]
-    if strict and strict.strip().lower() in ("1", "true", "yes"):
-        sys.argv += ["--strict"]
     update_staticmaps.main()
 
-
 def run_wflow(model_folder):
-    # Linux/cluster friendly: run the .sh with bash in the model folder
-    script = os.path.join(model_folder, "Wflow-julia.sh")
+    # Windows: run Wflow-julia.bat with cmd; Linux/cluster: run Wflow-julia.sh with bash
+    if os.name == "nt":
+        script_name = "Wflow-julia.bat"
+        cmd = ["cmd", "/c", script_name]
+    else:
+        script_name = "Wflow-julia.sh"
+        cmd = ["bash", script_name]
+
+    script = os.path.join(model_folder, script_name)
     if not os.path.isfile(script):
         print(f"[wrapper] ERROR: {script} not found", file=sys.stderr)
         try:
@@ -70,18 +64,29 @@ def run_wflow(model_folder):
         except Exception as e:
             print(f"[wrapper] Failed to list {model_folder}: {e}", file=sys.stderr)
         raise FileNotFoundError(script)
-    subprocess.run(["bash", "Wflow-julia.sh"], cwd=model_folder, check=True)
+    # Remove any old output so a failed run can never be scored with stale results
+    old_output = os.path.join(model_folder, "run_default", "output.csv")
+    if os.path.isfile(old_output):
+        os.remove(old_output)
 
+    # A crashed wflow run (e.g. physically implausible parameters) must not stop the
+    # whole calibration: report it and let calculate_metrics assign the penalty
+    try:
+        subprocess.run(cmd, cwd=model_folder, check=True, close_fds=True)
+    except subprocess.CalledProcessError as e:
+        print(f"[wrapper] WARNING: wflow failed (exit code {e.returncode}); "
+              f"candidate will receive the penalty", file=sys.stderr)
 
 def calculate_metrics(model_folder):
-    # Pass optional env overrides for warm up years / epsilon (keeps your prior workflow)
+    # Pass optional env overrides for warm-up years / epsilon (keeps your prior workflow)
     wy = os.environ.get("WRAPPER_WARMUP_YEARS")  # optional
     epsf = os.environ.get("WRAPPER_EPS_FACTOR")  # optional
 
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
     import compute_metrics
     sys.argv = [sys.argv[0],
-                "--sim", os.path.join(model_folder, "run_default", "output.csv"),
-                "--obs", os.path.join(model_folder, "observed_streamflow.csv"),
+                "--sim", (model_folder + "/run_default/output.csv"),
+                "--obs", (model_folder + "/observed_streamflow.csv"),
                 "--out_dir", model_folder]
     if wy:
         sys.argv += ["--warmup_years", str(int(wy))]
@@ -90,10 +95,9 @@ def calculate_metrics(model_folder):
 
     compute_metrics.main()
 
-
 def prepare_objectives(model_folder):
-    input_file  = os.path.join(model_folder, "metrics.txt")
-    output_file = os.path.join(model_folder, "objective_values.csv")
+    input_file  = (model_folder + "/metrics.txt")
+    output_file = (model_folder + "/objective_values.csv")
     names = ["KGEp", "logNSE", "bias_score"]
     with open(input_file, "r") as f:
         values = f.readline().strip().split(",")
@@ -104,7 +108,6 @@ def prepare_objectives(model_folder):
         w.writerow(["Name", "Value"])
         w.writerows(zip(names, values))
 
-
 def search_and_apply_variables(model_folder):
     create_tbl_files(model_folder)
     update_static_maps(model_folder)
@@ -112,31 +115,7 @@ def search_and_apply_variables(model_folder):
     calculate_metrics(model_folder)
     prepare_objectives(model_folder)
 
-
 def simulate(model_folder):
     run_wflow(model_folder)
     calculate_metrics(model_folder)
     prepare_objectives(model_folder)
-
-
-if __name__ == "__main__":
-    import argparse
-    p = argparse.ArgumentParser()
-    p.add_argument("model_folder")
-    p.add_argument("--mode", choices=["run-only", "apply-and-run", "simulate", "calibrate-style"],
-                   default="apply-and-run")
-    args = p.parse_args()
-
-    if args.mode == "run-only":
-        run_wflow(args.model_folder)
-
-    elif args.mode == "apply-and-run":
-        create_tbl_files(args.model_folder)
-        update_static_maps(args.model_folder)
-        run_wflow(args.model_folder)
-
-    elif args.mode == "simulate":
-        simulate(args.model_folder)
-
-    elif args.mode == "calibrate-style":
-        search_and_apply_variables(args.model_folder)
