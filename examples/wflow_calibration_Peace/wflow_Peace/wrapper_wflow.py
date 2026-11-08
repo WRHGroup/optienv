@@ -39,7 +39,7 @@ def create_tbl_files(model_folder):
 
 def update_static_maps(model_folder):
     sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
-    import robust_update_staticmaps
+    import update_staticmaps
     sys.argv = [sys.argv[0],
                 "--staticmap", (model_folder + "/staticmaps.nc"),
                 "--param_dir", model_folder,
@@ -47,8 +47,15 @@ def update_static_maps(model_folder):
     update_staticmaps.main()
 
 def run_wflow(model_folder):
-    # Linux/cluster-friendly: run the .sh with bash in the model folder
-    script = os.path.join(model_folder, "Wflow-julia.sh")
+    # Windows: run Wflow-julia.bat with cmd; Linux/cluster: run Wflow-julia.sh with bash
+    if os.name == "nt":
+        script_name = "Wflow-julia.bat"
+        cmd = ["cmd", "/c", script_name]
+    else:
+        script_name = "Wflow-julia.sh"
+        cmd = ["bash", script_name]
+
+    script = os.path.join(model_folder, script_name)
     if not os.path.isfile(script):
         print(f"[wrapper] ERROR: {script} not found", file=sys.stderr)
         try:
@@ -57,7 +64,18 @@ def run_wflow(model_folder):
         except Exception as e:
             print(f"[wrapper] Failed to list {model_folder}: {e}", file=sys.stderr)
         raise FileNotFoundError(script)
-    subprocess.run(["bash", "Wflow-julia.sh"], cwd=model_folder, check=True)
+    # Remove any old output so a failed run can never be scored with stale results
+    old_output = os.path.join(model_folder, "run_default", "output.csv")
+    if os.path.isfile(old_output):
+        os.remove(old_output)
+
+    # A crashed wflow run (e.g. physically implausible parameters) must not stop the
+    # whole calibration: report it and let calculate_metrics assign the penalty
+    try:
+        subprocess.run(cmd, cwd=model_folder, check=True, close_fds=True)
+    except subprocess.CalledProcessError as e:
+        print(f"[wrapper] WARNING: wflow failed (exit code {e.returncode}); "
+              f"candidate will receive the penalty", file=sys.stderr)
 
 def calculate_metrics(model_folder):
     # Pass optional env overrides for warm-up years / epsilon (keeps your prior workflow)
