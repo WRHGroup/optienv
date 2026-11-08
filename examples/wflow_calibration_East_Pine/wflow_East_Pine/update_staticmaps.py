@@ -174,7 +174,7 @@ def main():
                   "KsatHorFrac":(10.0,2000.0),"SoilThickness":(200.0,3000.0),"thetaS":(0.30,0.65),"KsatVer":(50.0,3000.0)}
 
     # Load dataset
-    ds=xr.load_dataset(staticmaps_path)
+    ds=xr.load_dataset(staticmaps_path,engine="h5netcdf")
 
     if args.landuse_var not in ds:
         ds.close(); fail(f"Landuse variable '{args.landuse_var}' not found")
@@ -281,7 +281,7 @@ def main():
 
     fd,tmp_path=tempfile.mkstemp(prefix=os.path.basename(staticmaps_path)+".",suffix=".tmp",dir=os.path.dirname(staticmaps_path))
     os.close(fd)
-    ds.to_netcdf(tmp_path,mode="w",engine="netcdf4",format="NETCDF4",encoding=encoding)
+    ds.to_netcdf(tmp_path,mode="w",engine="h5netcdf",format="NETCDF4",encoding=encoding)
     ds.close()
     shutil.move(tmp_path,staticmaps_path)
     log(f"Updated staticmaps written: {staticmaps_path}")
