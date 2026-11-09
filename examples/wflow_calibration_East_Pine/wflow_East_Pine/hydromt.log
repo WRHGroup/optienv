@@ -1,0 +1,212 @@
+2026-11-03 14:33:30,002 - build - log - DEBUG - Writing log messages to new file /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit/hydromt.log.
+2026-11-03 14:33:30,003 - build - log - INFO - HydroMT version: 0.10.1
+2026-11-03 14:33:30,003 - build - main - INFO - Building instance of wflow model at /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit.
+2026-11-03 14:33:30,003 - build - main - INFO - User settings:
+2026-11-03 14:33:33,825 - build - data_catalog - INFO - Parsing data catalog from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/data_catalog.yml
+2026-11-03 14:33:33,864 - build - model_api - INFO - Initializing wflow model from hydromt_wflow (v0.8.0).
+2026-11-03 14:33:33,864 - build - data_catalog - INFO - Parsing data catalog from /lustre06/project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/parameters_data.yml
+2026-11-03 14:33:33,913 - build - model_api - DEBUG - Setting model config options.
+2026-11-03 14:33:33,979 - build - model_api - DEBUG - Default config read from /lustre06/project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/wflow/wflow_sbm.toml
+2026-11-03 14:33:33,979 - build - model_api - INFO - setup_basemaps.region: {'subbasin': [-121.20778, 55.720001], 'uparea': 10000}
+2026-11-03 14:33:33,979 - build - model_api - INFO - setup_basemaps.hydrography_fn: merit_hydro
+2026-11-03 14:33:33,979 - build - model_api - INFO - setup_basemaps.basin_index_fn: merit_hydro_index
+2026-11-03 14:33:33,979 - build - model_api - INFO - setup_basemaps.res: 0.00833
+2026-11-03 14:33:33,979 - build - model_api - INFO - setup_basemaps.upscale_method: ihu
+2026-11-03 14:33:33,979 - build - wflow - INFO - Preparing base hydrography basemaps.
+2026-11-03 14:33:34,844 - build - rasterdataset - INFO - Reading merit_hydro raster data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Merit_P/*.tif
+2026-11-03 14:33:35,426 - build - basin_mask - DEBUG - Parsed region (kind=subbasin): {'uparea': 10000, 'xy': [-121.20778, 55.720001]}
+2026-11-03 14:33:35,586 - build - basin_mask - DEBUG - Getting basin IDs at point locations.
+2026-11-03 14:33:49,657 - build - basin_mask - INFO - subbasin bbox: [-123.0078, 54.4496, -120.5802, 55.8267]
+2026-11-03 14:33:50,861 - build - wflow - DEBUG - Adding basins vector to geoms.
+2026-11-03 14:33:50,862 - build - basemaps - DEBUG - Mask in dataset assumed to represent subbasins.
+2026-11-03 14:33:50,878 - build - basemaps - DEBUG - (Sub)basin at original resolution has 23475930 cells.
+2026-11-03 14:33:53,161 - build - basemaps - DEBUG - Burn subbasin outlet in upstream area data.
+2026-11-03 14:33:53,350 - build - basemaps - INFO - Upscale flow direction data: 31x, ihu method.
+2026-11-03 14:34:12,358 - build - basemaps - DEBUG - Derive stream order.
+2026-11-03 14:34:12,530 - build - basemaps - DEBUG - Map shape: (164, 290); active cells: 24439.
+2026-11-03 14:34:12,530 - build - basemaps - DEBUG - Outlet coordinates (1/1): (-121.21153,55.71770).
+2026-11-03 14:34:12,558 - build - basemaps - DEBUG - Slope map lndslp not found: derive from elevation map.
+2026-11-03 14:34:15,263 - build - wflow - DEBUG - Adding region vector to geoms.
+2026-11-03 14:34:15,271 - build - model_api - INFO - setup_rivers.hydrography_fn: merit_hydro
+2026-11-03 14:34:15,271 - build - model_api - INFO - setup_rivers.river_geom_fn: hydro_rivers_p
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.river_upa: 10
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.rivdph_method: powlaw
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.slope_len: 2000
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.min_rivlen_ratio: 0.0
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.min_rivdph: 1
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.min_rivwth: 30
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.smooth_len: 5000
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.rivman_mapping_fn: roughness_river_mapping_default
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.elevtn_map: wflow_dem
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.river_routing: kinematic-wave
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.connectivity: 8
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.rivwth_method: powlaw
+2026-11-03 14:34:15,272 - build - model_api - INFO - setup_rivers.qbankfull_method: manning
+2026-11-03 14:34:15,272 - build - wflow - INFO - Preparing river maps.
+2026-11-03 14:34:15,423 - build - rasterdataset - INFO - Reading merit_hydro raster data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Merit_P/*.tif
+2026-11-03 14:34:15,501 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:34:15,562 - build - river - DEBUG - Set river mask (min uparea: 10 km2) and prepare flow dirs.
+2026-11-03 14:34:18,217 - build - river - DEBUG - Derive river length.
+2026-11-03 14:36:19,689 - build - river - DEBUG - Derive river slope.
+2026-11-03 14:36:20,551 - build - dataframe - INFO - Reading roughness_river_mapping_default csv data from /lustre06/project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/wflow/N_river_mapping.csv
+2026-11-03 14:36:20,565 - build - landuse - INFO - Deriving N_River using average resampling (nodata=-999.0).
+2026-11-03 14:36:20,577 - build - geodataframe - INFO - Reading hydro_rivers_p vector data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/HydroRIVERS_v10_ar_clean.gpkg
+2026-11-03 14:36:21,454 - build - geodataframe - DEBUG - Clip intersects [-123.004, 54.452, -120.581, 55.822] (EPSG:4326)
+2026-11-03 14:36:21,634 - build - river - DEBUG - Derive ['rivwth', 'rivdph', 'qbankfull'] from shapefile.
+2026-11-03 14:36:21,709 - build - river - DEBUG - Valid for 3414/3788 river cells (max dist: 366 m).
+2026-11-03 14:36:24,065 - build - wflow - DEBUG - Adding rivers vector to geoms.
+2026-11-03 14:36:24,720 - build - model_api - INFO - setup_lakes.lakes_fn: hydro_lakes
+2026-11-03 14:36:24,720 - build - model_api - INFO - setup_lakes.rating_curve_fns: None
+2026-11-03 14:36:24,720 - build - model_api - INFO - setup_lakes.min_area: 10.0
+2026-11-03 14:36:24,720 - build - model_api - INFO - setup_lakes.add_maxstorage: False
+2026-11-03 14:36:24,720 - build - wflow - INFO - Preparing lake maps.
+2026-11-03 14:36:24,721 - build - geodataframe - INFO - Reading hydro_lakes vector data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/HydroLAKES_polys_v10_hydromt.gpkg
+2026-11-03 14:36:24,780 - build - nodata - WARNING - No data was read from source: hydro_lakes
+2026-11-03 14:36:24,780 - build - wflow - INFO - Skipping method, as no data has been found
+2026-11-03 14:36:24,780 - build - model_api - INFO - setup_lulcmaps.lulc_fn: esa_worldcover
+2026-11-03 14:36:24,780 - build - model_api - INFO - setup_lulcmaps.lulc_mapping_fn: None
+2026-11-03 14:36:24,780 - build - model_api - INFO - setup_lulcmaps.lulc_vars: ['landuse', 'Kext', 'N', 'PathFrac', 'RootingDepth', 'Sl', 'Swood', 'WaterFrac', 'kc', 'alpha_h1', 'h1', 'h2', 'h3_high', 'h3_low', 'h4']
+2026-11-03 14:36:24,780 - build - wflow - INFO - Preparing LULC parameter maps.
+2026-11-03 14:36:24,781 - build - rasterdataset - INFO - Reading esa_worldcover raster data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/ESA_WorldCover_PineRiver_EastPine_300m.tif
+2026-11-03 14:36:24,831 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:36:24,857 - build - dataframe - INFO - Reading esa_worldcover_mapping_default csv data from /lustre06/project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/lulc/esa_worldcover_mapping.csv
+2026-11-03 14:36:24,917 - build - landuse - INFO - Deriving landuse using nearest resampling (nodata=0).
+2026-11-03 14:36:24,997 - build - landuse - INFO - Deriving Kext using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,065 - build - landuse - INFO - Deriving N using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,133 - build - landuse - INFO - Deriving PathFrac using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,202 - build - landuse - INFO - Deriving RootingDepth using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,272 - build - landuse - INFO - Deriving Sl using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,342 - build - landuse - INFO - Deriving Swood using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,410 - build - landuse - INFO - Deriving WaterFrac using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,478 - build - landuse - INFO - Deriving kc using average resampling (nodata=-999.0).
+2026-11-03 14:36:25,551 - build - landuse - INFO - Deriving alpha_h1 using mode resampling (nodata=-999).
+2026-11-03 14:36:25,760 - build - landuse - INFO - Deriving h1 using average resampling (nodata=-999).
+2026-11-03 14:36:25,843 - build - landuse - INFO - Deriving h2 using average resampling (nodata=-999).
+2026-11-03 14:36:25,930 - build - landuse - INFO - Deriving h3_high using average resampling (nodata=-999).
+2026-11-03 14:36:26,019 - build - landuse - INFO - Deriving h3_low using average resampling (nodata=-999).
+2026-11-03 14:36:26,108 - build - landuse - INFO - Deriving h4 using average resampling (nodata=-999).
+2026-11-03 14:36:26,212 - build - model_api - INFO - setup_soilmaps.soil_fn: soilgrids_2020
+2026-11-03 14:36:26,212 - build - model_api - INFO - setup_soilmaps.ptf_ksatver: brakensiek
+2026-11-03 14:36:26,212 - build - model_api - INFO - setup_soilmaps.soil_mapping_fn: None
+2026-11-03 14:36:26,212 - build - model_api - INFO - setup_soilmaps.wflow_thicknesslayers: [100, 300, 800]
+2026-11-03 14:36:26,212 - build - wflow - INFO - Preparing soil parameter maps.
+2026-11-03 14:36:29,037 - build - rasterdataset - INFO - Reading soilgrids_2020 raster data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/SoilGrids_P/*.tif
+2026-11-03 14:36:34,048 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:36:34,062 - build - rasterdataset - DEBUG - Convert units for 42 variables.
+2026-11-03 14:36:34,389 - build - soilgrids - INFO - calculate and resample thetaS
+2026-11-03 14:37:15,747 - build - soilgrids - INFO - calculate and resample thetaR
+2026-11-03 14:37:41,504 - build - soilgrids - INFO - calculate and resample KsatVer
+2026-11-03 14:37:44,922 - build - soilgrids - INFO - calculate and resample pore size distribution index
+2026-11-03 14:38:18,034 - build - soilgrids - INFO - fit z - log(KsatVer) with numpy linalg regression (y = b*x) -> M_
+2026-11-03 14:38:35,303 - build - soilgrids - INFO - fit zi - Ksat with curve_fit (scipy.optimize) -> M
+2026-11-03 14:39:34,331 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for thetaS
+2026-11-03 14:39:49,687 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for thetaR
+2026-11-03 14:40:08,326 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for SoilThickness
+2026-11-03 14:40:09,659 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for SoilMinThickness
+2026-11-03 14:40:10,322 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for c
+2026-11-03 14:40:10,336 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer
+2026-11-03 14:40:15,425 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_2.5cm
+2026-11-03 14:40:18,760 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_10.0cm
+2026-11-03 14:40:23,835 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_22.5cm
+2026-11-03 14:40:28,916 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_45.0cm
+2026-11-03 14:40:33,919 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_80.0cm
+2026-11-03 14:40:38,890 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for KsatVer_150.0cm
+2026-11-03 14:40:43,845 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M_original_
+2026-11-03 14:41:01,865 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M_
+2026-11-03 14:41:23,192 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for f_
+2026-11-03 14:41:44,653 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M_original
+2026-11-03 14:42:06,168 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for M
+2026-11-03 14:42:27,706 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for f
+2026-11-03 14:42:49,167 - build - soilgrids - DEBUG - Interpolate nodata (NaN) values for wflow_soil
+2026-11-03 14:43:18,549 - build - model_api - INFO - setup_laimaps.lai_fn: modis_lai
+2026-11-03 14:43:18,549 - build - model_api - INFO - setup_laimaps.lulc_fn: None
+2026-11-03 14:43:18,549 - build - model_api - INFO - setup_laimaps.lulc_sampling_method: any
+2026-11-03 14:43:18,549 - build - model_api - INFO - setup_laimaps.lulc_zero_classes: []
+2026-11-03 14:43:18,549 - build - model_api - INFO - setup_laimaps.buffer: 2
+2026-11-03 14:43:18,549 - build - wflow - INFO - Preparing LAI maps.
+2026-11-03 14:43:18,551 - build - rasterdataset - INFO - Reading modis_lai netcdf data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/modis_lai_monthly_climatology_pine.nc
+2026-11-03 14:43:19,418 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:43:19,420 - build - landuse - INFO - Deriving LAI using average resampling (nodata=nan).
+2026-11-03 14:43:20,220 - build - model_api - INFO - setup_outlets.river_only: True
+2026-11-03 14:43:20,220 - build - model_api - INFO - setup_outlets.toml_output: csv
+2026-11-03 14:43:20,220 - build - model_api - INFO - setup_outlets.gauge_toml_header: ['Q']
+2026-11-03 14:43:20,220 - build - model_api - INFO - setup_outlets.gauge_toml_param: ['lateral.river.q_av']
+2026-11-03 14:43:20,220 - build - wflow - INFO - Gauges locations set based on river outlets.
+2026-11-03 14:43:20,230 - build - wflow - INFO - Gauges map based on catchment river outlets added.
+2026-11-03 14:43:20,230 - build - wflow - INFO - Adding ['lateral.river.q_av'] to csv section of toml.
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.gauges_fn: hydat_pine
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.index_col: None
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.snap_to_river: True
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.mask: None
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.snap_uparea: False
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.max_dist: 10000.0
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.wdw: 3
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.rel_error: 0.05
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.abs_error: 50.0
+2026-11-03 14:43:20,230 - build - model_api - INFO - setup_gauges.fillna: False
+2026-11-03 14:43:20,231 - build - model_api - INFO - setup_gauges.derive_subcatch: False
+2026-11-03 14:43:20,231 - build - model_api - INFO - setup_gauges.basename: None
+2026-11-03 14:43:20,231 - build - model_api - INFO - setup_gauges.toml_output: csv
+2026-11-03 14:43:20,231 - build - model_api - INFO - setup_gauges.gauge_toml_header: ['Q', 'P']
+2026-11-03 14:43:20,231 - build - model_api - INFO - setup_gauges.gauge_toml_param: ['lateral.river.q_av', 'vertical.precipitation']
+2026-11-03 14:43:20,232 - build - geodataframe - INFO - Reading hydat_pine csv data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/grdc_Pine.csv
+2026-11-03 14:44:03,133 - build - geodataframe - DEBUG - Clip intersects [-123.004, 54.452, -120.581, 55.822] (EPSG:4326)
+2026-11-03 14:44:03,133 - build - wflow - INFO - 1 hydat-pine gauge locations found within domain
+2026-11-03 14:44:03,485 - build - wflow - INFO - Adding ['lateral.river.q_av', 'vertical.precipitation'] to csv section of toml.
+2026-11-03 14:44:03,485 - build - model_api - INFO - setup_precip_forcing.precip_fn: era5_precip
+2026-11-03 14:44:03,486 - build - model_api - INFO - setup_precip_forcing.precip_clim_fn: None
+2026-11-03 14:44:03,486 - build - model_api - INFO - setup_precip_forcing.chunksize: None
+2026-11-03 14:44:03,509 - build - rasterdataset - INFO - Reading era5_precip netcdf data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/era5land_precip_peace2000_2010_mmday.nc
+2026-11-03 14:44:04,188 - build - rasterdataset - DEBUG - Slicing time dim (datetime.datetime(2000, 1, 1, 0, 0), datetime.datetime(2000, 6, 30, 0, 0))
+2026-11-03 14:44:04,213 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:44:06,121 - build - model_api - INFO - setup_temp_pet_forcing.temp_pet_fn: era5_temperature
+2026-11-03 14:44:06,121 - build - model_api - INFO - setup_temp_pet_forcing.pet_method: debruin
+2026-11-03 14:44:06,121 - build - model_api - INFO - setup_temp_pet_forcing.press_correction: True
+2026-11-03 14:44:06,121 - build - model_api - INFO - setup_temp_pet_forcing.temp_correction: False
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.wind_correction: True
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.wind_altitude: 10
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.reproj_method: nearest_index
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.fillna_method: None
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.dem_forcing_fn: None
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.skip_pet: True
+2026-11-03 14:44:06,122 - build - model_api - INFO - setup_temp_pet_forcing.chunksize: None
+2026-11-03 14:44:06,123 - build - rasterdataset - INFO - Reading era5_temperature netcdf data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/era5_peace_temperature_2000_2010_clean.nc
+2026-11-03 14:44:06,205 - build - rasterdataset - DEBUG - Slicing time dim (datetime.datetime(2000, 1, 1, 0, 0), datetime.datetime(2000, 6, 30, 0, 0))
+2026-11-03 14:44:06,210 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:44:06,360 - build - model_api - INFO - setup_pet_forcing.pet_fn: era5_pet
+2026-11-03 14:44:06,360 - build - model_api - INFO - setup_pet_forcing.chunksize: None
+2026-11-03 14:44:06,360 - build - wflow - INFO - Preparing potential evapotranspiration forcing maps.
+2026-11-03 14:44:06,362 - build - rasterdataset - INFO - Reading era5_pet netcdf data from /lustre07/scratch/alaminie/Build_Wflow_East_Pine/era5_peace_pet_2000_2010_hargreaves.nc
+2026-11-03 14:44:06,438 - build - rasterdataset - DEBUG - Slicing time dim (datetime.datetime(2000, 1, 1, 0, 0), datetime.datetime(2000, 6, 30, 0, 0))
+2026-11-03 14:44:06,443 - build - rasterdataset - DEBUG - Clip to [-123.004, 54.452, -120.581, 55.822] (epsg:4326))
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.dtype: float32
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.nodata: -999
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.KsatHorFrac: 1000
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.Cfmax: 3.75653
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.TT: 0
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.TTI: 2
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.TTM: 0
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.WHC: 0.1
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.WaterFrac: 0.0
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.PathFrac: 0.0
+2026-11-03 14:44:06,619 - build - model_api - INFO - setup_constant_pars.cf_soil: 0.038
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.EoverR: 0.11
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.InfiltCapPath: 5
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.InfiltCapSoil: 600
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.MaxLeakage: 0
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.rootdistpar: -500
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.alpha_h1: 1
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.h1: 0
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.h2: -100
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.h3_high: -400
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.h3_low: -1000
+2026-11-03 14:44:06,620 - build - model_api - INFO - setup_constant_pars.h4: -15849
+2026-11-03 14:44:06,661 - build - model_api - INFO - setup_cold_states.timestamp: 2000-01-01 00:00:00
+2026-11-03 14:44:06,726 - build - wflow - INFO - Write model data to /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit
+2026-11-03 14:44:06,788 - build - wflow - INFO - Write grid to /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit/staticmaps.nc
+2026-11-03 14:44:07,937 - build - wflow - INFO - Writing model staticgeom to file.
+2026-11-03 14:44:08,210 - build - wflow - INFO - Write forcing file
+2026-11-03 14:44:08,222 - build - wflow - INFO - Process forcing; saving to /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit/inmaps.nc
+2026-11-03 14:44:09,145 - build - wflow - INFO - Writing states file
+2026-11-03 14:44:09,146 - build - wflow - INFO - Writing model config to /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit/wflow_sbm.toml
+2026-11-03 14:44:09,182 - build - wflow - INFO - Writing model config to /lustre07/scratch/alaminie/Build_Wflow_East_Pine/Wflow_EPineGit/wflow_sbm.toml

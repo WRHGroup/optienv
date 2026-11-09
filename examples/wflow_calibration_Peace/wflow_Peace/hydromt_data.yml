@@ -1,0 +1,200 @@
+era5_pet:
+  data_type: RasterDataset
+  version: v1.0
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/era5_peace_pet_1960_1965_hargreaves.nc
+  driver: netcdf
+  meta:
+    category: meteo
+    paper_ref: Hersbach et al. (2020)
+    source_url: https://doi.org/10.24381/cds.adbb2d47
+    notes: Potential/reference evapotranspiration forcing. Variable must be named
+      'pet' and units should be positive mm/day.
+  crs: 4326
+era5_precip:
+  data_type: RasterDataset
+  version: v1.0
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/era5land_peace_precip_1960_1965_mmday.nc
+  driver: netcdf
+  meta:
+    category: meteo
+    paper_ref: Hersbach et al. (2020)
+    source_url: https://doi.org/10.24381/cds.adbb2d47
+    notes: Daily precipitation for Pine River basin; variable must be named 'precip'
+      and units should be mm per timestep, normally mm/day for daily forcing.
+  crs: 4326
+era5_temperature:
+  data_type: RasterDataset
+  version: v1.0
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/era5_peace_temperature_1960_1965_clean.nc
+  driver: netcdf
+  meta:
+    category: meteo
+    paper_ref: Hersbach et al. (2020)
+    source_url: https://doi.org/10.24381/cds.adbb2d47
+    notes: Daily mean temperature derived from ERA5 Tmax and Tmin. Variable must be
+      named 'temp' and units should be degrees Celsius.
+  crs: 4326
+esa_worldcover:
+  data_type: RasterDataset
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/ESA_WorldCover_Peace_v200.tif
+  driver: raster
+  meta:
+    category: landuse & landcover
+    paper_ref: Zanaga et al. (2022)
+    source_version: ESA WorldCover v200 (2021), 10 m
+    source_license: CC-BY-4.0
+    source_url: https://esa-worldcover.org
+    notes: 11-class 10 m land cover (codes 10-100); use esa_worldcover_mapping for
+      wflow params
+  crs: 4326
+esa_worldcover_mapping_default:
+  data_type: DataFrame
+  path: /lustre06/project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/lulc/esa_worldcover_mapping.csv
+  driver: csv
+  driver_kwargs:
+    index_col: 0
+    dtype:
+      landuse: int16
+      Kext: float32
+      N: float32
+      PathFrac: float32
+      RootingDepth: float32
+      Sl: float32
+      Swood: float32
+      WaterFrac: float32
+      kc: float32
+      alpha_h1: int16
+      h1: int16
+      h2: int16
+      h3_high: int16
+      h3_low: int16
+      h4: int16
+      USLE_C: float32
+      Cov_River: float32
+  meta:
+    category: landuse
+    source_info: landuse parameters based on esa worldcover classification (https://doi.org/10.5281/zenodo.5571936)
+    source_version: 1.0
+hydat_peace:
+  data_type: GeoDataFrame
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/grdc_peace.csv
+  driver: csv
+  meta:
+    category: gauges
+    source_info: Water Survey of Canada HYDAT station metadata subset for Pine River
+      basin
+    source_url: https://wateroffice.ec.gc.ca/
+  crs: 4326
+hydro_lakes:
+  data_type: GeoDataFrame
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/HydroLAKES_polys_v10_hydromt.gpkg
+  driver: vector
+  unit_mult:
+    Area_avg: 1000000.0
+  meta:
+    category: surface water
+    source_info: HydroLAKES extract for Pine River / Peace River basin
+    source_version: 1.0
+  crs: 4326
+hydro_rivers_p:
+  data_type: GeoDataFrame
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/HydroRIVERS_v10_ar_clean.gpkg
+  driver: vector
+  meta:
+    category: hydrography
+    source_info: HydroRIVERS North America extract for Pine River / Peace River basin
+  crs: 4326
+merit_hydro:
+  data_type: RasterDataset
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/Merit_P/*.tif
+  driver: raster
+  meta:
+    category: hydrography
+  crs: 4326
+merit_hydro_index:
+  data_type: GeoDataFrame
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/merit_hydro_index_basid.gpkg
+  driver: vector
+  driver_kwargs:
+    layer: merit_hydro_index_basid
+  meta:
+    category: topography
+  crs: 4326
+modis_lai:
+  data_type: RasterDataset
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/peace_lai_clim.nc
+  driver: netcdf
+  meta:
+    category: landuse & landcover
+    paper_doi: 10.5067/MODIS/MCD15A3H.006
+    paper_ref: Myneni et al. (2015)
+    source_license: https://lpdaac.usgs.gov/data/data-citation-and-policies/
+    source_url: https://lpdaac.usgs.gov/products/mcd15a3hv006/
+    source_version: MCD15A3H V006
+    lai: 0.1
+  crs: 4326
+roughness_river_mapping_default:
+  data_type: DataFrame
+  path: /lustre06/project/6087451/alaminie/Nile/HydroMT_Wflow/lib/python3.11/site-packages/hydromt_wflow/data/wflow/N_river_mapping.csv
+  driver: csv
+  driver_kwargs:
+    index_col: 0
+    dtype:
+      N_River: float32
+  meta:
+    category: hydrography
+    source_info: Mapping between streamorder and river Manning roughness
+    source_version: 1.0
+soilgrids_2020:
+  data_type: RasterDataset
+  path: /lustre07/scratch/alaminie/Data_Catalog_Peace/Build_Wflow_Peace/SoilGrids_P/*.tif
+  driver: raster
+  unit_mult:
+    bd_sl1: 0.01
+    bd_sl2: 0.01
+    bd_sl3: 0.01
+    bd_sl4: 0.01
+    bd_sl5: 0.01
+    bd_sl6: 0.01
+    bd_sl7: 0.01
+    clyppt_sl1: 0.1
+    clyppt_sl2: 0.1
+    clyppt_sl3: 0.1
+    clyppt_sl4: 0.1
+    clyppt_sl5: 0.1
+    clyppt_sl6: 0.1
+    clyppt_sl7: 0.1
+    sltppt_sl1: 0.1
+    sltppt_sl2: 0.1
+    sltppt_sl3: 0.1
+    sltppt_sl4: 0.1
+    sltppt_sl5: 0.1
+    sltppt_sl6: 0.1
+    sltppt_sl7: 0.1
+    sndppt_sl1: 0.1
+    sndppt_sl2: 0.1
+    sndppt_sl3: 0.1
+    sndppt_sl4: 0.1
+    sndppt_sl5: 0.1
+    sndppt_sl6: 0.1
+    oc_sl1: 0.1
+    oc_sl2: 0.1
+    oc_sl3: 0.1
+    oc_sl4: 0.1
+    oc_sl5: 0.1
+    oc_sl6: 0.1
+    oc_sl7: 0.1
+    ph_sl1: 0.1
+    ph_sl2: 0.1
+    ph_sl3: 0.1
+    ph_sl4: 0.1
+    ph_sl5: 0.1
+    ph_sl6: 0.1
+    ph_sl7: 0.1
+    soilthickness: 0.01
+  meta:
+    category: soil
+    paper_doi: 10.5194/soil-7-217-2021
+    source_url: https://www.isric.org/explore/soilgrids
+    source_version: 2020
+  crs: 4326
