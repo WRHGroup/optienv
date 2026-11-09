@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "gauges_hydat-peace",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "grdc_no": 1, "wmo_reg": 4, "sub_reg": 4081, "river": "PEACE RIVER", "station": "HUDSON HOPE", "country": "CA", "area": 73130, "altitude": -999, "d_start": 1917, "d_end": 2019, "d_yrs": 103, "d_miss": -999, "m_start": -999, "m_end": -999, "m_yrs": -999, "m_miss": -999, "t_start": 1917, "t_end": 2019, "t_yrs": 103, "lta_discharge": -999, "r_volume_yr": -999, "r_height_yr": -999 }, "geometry": { "type": "Point", "coordinates": [ -121.906954, 56.027116 ] } },
+{ "type": "Feature", "properties": { "grdc_no": 2, "wmo_reg": 4, "sub_reg": 4081, "river": "PEACE RIVER", "station": "TAYLOR", "country": "CA", "area": 100800, "altitude": -999, "d_start": 1944, "d_end": 2025, "d_yrs": 82, "d_miss": -999, "m_start": -999, "m_end": -999, "m_yrs": -999, "m_miss": -999, "t_start": 1944, "t_end": 2025, "t_yrs": 82, "lta_discharge": -999, "r_volume_yr": -999, "r_height_yr": -999 }, "geometry": { "type": "Point", "coordinates": [ -120.646797, 56.117127 ] } },
+{ "type": "Feature", "properties": { "grdc_no": 3, "wmo_reg": 4, "sub_reg": 4081, "river": "SMOKY RIVER", "station": "WATINO", "country": "CA", "area": 50030, "altitude": -999, "d_start": 1915, "d_end": 2024, "d_yrs": 110, "d_miss": -999, "m_start": -999, "m_end": -999, "m_yrs": -999, "m_miss": -999, "t_start": 1915, "t_end": 2024, "t_yrs": 110, "lta_discharge": -999, "r_volume_yr": -999, "r_height_yr": -999 }, "geometry": { "type": "Point", "coordinates": [ -117.586416, 55.757082 ] } },
+{ "type": "Feature", "properties": { "grdc_no": 4, "wmo_reg": 4, "sub_reg": 4081, "river": "PEACE RIVER", "station": "PEACE POINT", "country": "CA", "area": 299400, "altitude": -999, "d_start": 1959, "d_end": 2024, "d_yrs": 66, "d_miss": -999, "m_start": -999, "m_end": -999, "m_yrs": -999, "m_miss": -999, "t_start": 1959, "t_end": 2024, "t_yrs": 66, "lta_discharge": -999, "r_volume_yr": -999, "r_height_yr": -999 }, "geometry": { "type": "Point", "coordinates": [ -112.455779, 59.087496 ] } }
+]
+}

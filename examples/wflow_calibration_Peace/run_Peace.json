@@ -1,0 +1,12 @@
+{
+  "model": {
+    "model_dir": "wflow_Peace",
+    "wrapper_file": "wrapper_wflow.py",
+    "variables_csv": "variable_declaration.csv",
+    "objectives_csv": "objective_declaration.csv"
+  },
+  "algorithm": {
+    "population_size": 10,
+    "generations": 2
+  }
+}
